@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Web Games</title>
+
+  <!-- Meta -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Hyoungmin Lee">
+  <meta name="description" content="Vanila JS Web Game Making">
+
+  <!-- ========== Font ========== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- ========== CDN ========== -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css"
+    integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+  <!-- ========== CSS ========== -->
+  <link rel="stylesheet" href="./src/main.css">
+
+  <!-- ========== JavaScript ========== -->
+  <script src="./script/timer.js" defer></script>
+  <script src="./script/word-relay.js" defer></script>
+  <script src="./script/calculator.js" defer></script>
+  <script src="./script/number-baseball.js" defer></script>
+  <script src="./script/lotto.js" defer></script>
+  <script src="./script/rsp.js" defer></script>
+  <script src="./script/response.js" defer></script>
+  <script src="./script/tictactoe.js" defer></script>
+  <script src="./script/textrpg.js" defer></script>
+
+</head>
+<body>
+  <!-- ========== 001. Word-relay game ========== -->
+  <h1>Word-relay</h1>
+  <form id='number__form'>
+    <input id='number' type="number" min="1" max="5" placeholder="Number of Participants">
+    <button class="number__btn button">Submit</button>
+  </form>
+  <div>Participant <span id="order">1</span></div>
+  <div>Suggestion Word: <span id="word"></span></div>
+  <form id='word__form'>
+    <input id='input__word' type="text" placeholder="Word">
+    <button class="word__btn button">Submit</button>
+  </form>
+
+  <!-- ========== 002. Calculator ========== -->
+  <div class="calculator">
+    <input id="operator" readonly>
+    <input id="result" type="number" readonly>
+    <div class="row">
+      <button id="num-7">7</button>
+      <button id="num-8">8</button>
+      <button id="num-9">9</button>
+      <button id="plus">+</button>
+    </div>
+    <div class="row">
+      <button id="num-6">6</button>
+      <button id="num-5">5</button>
+      <button id="num-4">4</button>
+      <button id="minus">-</button>
+    </div>
+    <div class="row">
+      <button id="num-3">3</button>
+      <button id="num-2">2</button>
+      <button id="num-1">1</button>
+      <button id="divide">/</button>
+    </div>
+    <div class="row">
+      <button id="clear">C</button>
+      <button id="num-0">0</button>
+      <button id="calculate">=</button>
+      <button id="multiply">X</button>
+    </div>
+  </div>
+
+  <!-- 003. Number Baseball game -->
+  <form id="baseball__form">
+    <input type="text" id="baseball__input">
+    <button class="button">Submit</button>
+  </form>
+  <div id="baseball__logs"></div>
+
+  <!-- 004. Lotto game -->
+  <button class="raffle__button button active">Raffle!</button>
+  <div id="lotto__result"></div>
+  <div id="lotto__bonus"></div>
+  <button class="reset__button button active">Reset</button>
+
+  <!-- 005. RSP game -->
+  <div id="RSP__computer"></div>
+  <div>
+    <button id="RSP__rock" class="btn button">Rock</button>
+    <button id="RSP__scissors" class="btn button">Scissors</button>
+    <button id="RSP__paper" class="btn button">Paper</button>
+  </div>
+  <div id="RSP__score">0</div>
+  <div id="RSP__result">0</div>
+
+  <!-- 006. Response Speed Test -->
+  <div id="Response__screen" class="ready">Click to Start!</div>
+  <div id="Response__result"></div>
+  <div id="Response__average"></div>
+  <div id="Response__topfive"></div>
+
+  <!-- 007. Tic-Tac-Toe -->
+
+  <!-- 008. Text RPG -->
+  <form action="" id="start__screen">
+    <input type="text" placeholder="캐릭터의 이름을 입력하세요!">
+    <button id="start__btn" class="btn btn-primary">게임 시작</button>
+  </form>
+  <div class="screen">
+    <div id="hero__stat">
+      <span id="hero__name"></span>
+      <span id="hero__level"></span>
+      <span id="hero__hp"></span>
+      <span id="hero__exp"></span>
+      <span id="hero__atk"></span>
+      <span id="hero__def"></span>
+      <span id="hero__item"></span>
+    </div>
+    <form action="" id="game__menu" style="display: none;">
+      <div id="menu__adventure"></div>
+      <div id="menu__shop"></div>
+      <div id="menu__rest"></div>
+      <div id="menu__end"></div>
+      <input type="text" id="menu__input">
+      <button id="menu__btn" class="btn btn-primary"></button>
+    </form>
+    <form action="" id="battle__menu" style="display: none;">
+      <div id="battle__attack"></div>
+      <div id="battle__heal"></div>
+      <div id="battle__defence"></div>
+      <div id="battle__run"></div>
+      <input type="text" id="battle__input">
+      <button id="battle__btn" class="btn btn-primary"></button>
+    </form>
+    <div id="message"></div>
+    <div id="monster__stat">
+      <span id="monster__name"></span>
+      <span id="monster__hp"></span>
+      <span id="monster__atk"></span>
+      <span id="monster__def"></span>
+    </div>
+</body>
+</html>
