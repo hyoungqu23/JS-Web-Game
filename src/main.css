@@ -3,5 +3,55 @@
   margin: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  /* scroll-behavior: smooth; */
 }
 
+.ipt {
+  width: 300px;
+  height: 50px;
+  background: rgb(255, 255, 255);
+  box-shadow: inset 8px 8px 8px rgba(0, 0, 0, 0.25),   inset -8px -8px 8px rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 25px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.btn {
+  width: 150px;
+  height: 50px;
+  background: rgb(255, 255, 255);
+  box-shadow: 12px 12px 24px 0 rgba(0, 0, 0, 0.25), -12px -12px 24px 0 rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.btn:hover {
+  box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.2), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* main #00019E point rgba(255, 169, 0) title #0F1115 desc #46474B footer #000129  */
+
+body .scroll__container {
+  height: 100vh;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  /* scroll-padding: 10px; */
+}
+
+section.webgame {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tic-Tac-Toe */
+#tictactoe td {
+  width: 45px;
+  height: 45px;
+  border: 1px solid;
+  text-align: center;
+}
