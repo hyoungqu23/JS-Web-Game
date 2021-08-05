@@ -123,5 +123,5 @@ const callback = (event) => {
 
 $tictactoeTable.addEventListener('click', callback);
 
-document.querySelector('#TicTacToe__container .game__container').append($tictactoeTable);
-document.querySelector('#TicTacToe__container .game__container').append($tictactoeResult);
+document.querySelector('#tictactoe').append($tictactoeTable);
+document.querySelector('#tictactoe').append($tictactoeResult);

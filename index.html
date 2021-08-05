@@ -36,117 +36,136 @@
 
 </head>
 <body>
-  <!-- ========== 001. Word-relay game ========== -->
-  <h1>Word-relay</h1>
-  <form id='number__form'>
-    <input id='number' type="number" min="1" max="5" placeholder="Number of Participants">
-    <button class="number__btn button">Submit</button>
-  </form>
-  <div>Participant <span id="order">1</span></div>
-  <div>Suggestion Word: <span id="word"></span></div>
-  <form id='word__form'>
-    <input id='input__word' type="text" placeholder="Word">
-    <button class="word__btn button">Submit</button>
-  </form>
+  <div class="scroll__container">
+    <!-- ========== 001. Word-relay game ========== -->
+    <section class="webgame" id="word-relay">
+      <h1>Word-relay</h1>
+      <form id='number__form'>
+        <input id='number' class="ipt" type="number" min="1" max="5" placeholder="Number of Participants">
+        <button class="number__btn btn">Submit</button>
+      </form>
+      <div>Participant <span id="order">1</span></div>
+      <div>Suggestion Word: <span id="word"></span></div>
+      <form id='word__form'>
+        <input id='input__word' class="ipt" type="text" placeholder="Word">
+        <button class="word__btn btn">Submit</button>
+      </form>
+    </section>
 
-  <!-- ========== 002. Calculator ========== -->
-  <div class="calculator">
-    <input id="operator" readonly>
-    <input id="result" type="number" readonly>
-    <div class="row">
-      <button id="num-7">7</button>
-      <button id="num-8">8</button>
-      <button id="num-9">9</button>
-      <button id="plus">+</button>
-    </div>
-    <div class="row">
-      <button id="num-6">6</button>
-      <button id="num-5">5</button>
-      <button id="num-4">4</button>
-      <button id="minus">-</button>
-    </div>
-    <div class="row">
-      <button id="num-3">3</button>
-      <button id="num-2">2</button>
-      <button id="num-1">1</button>
-      <button id="divide">/</button>
-    </div>
-    <div class="row">
-      <button id="clear">C</button>
-      <button id="num-0">0</button>
-      <button id="calculate">=</button>
-      <button id="multiply">X</button>
-    </div>
+    <!-- ========== 002. Calculator ========== -->
+    <section class="webgame" id="calculator">
+      <div class="calculator">
+        <input id="operator" readonly>
+        <input id="result" type="number" readonly>
+        <div class="row">
+          <button id="num-7">7</button>
+          <button id="num-8">8</button>
+          <button id="num-9">9</button>
+          <button id="plus">+</button>
+        </div>
+        <div class="row">
+          <button id="num-6">6</button>
+          <button id="num-5">5</button>
+          <button id="num-4">4</button>
+          <button id="minus">-</button>
+        </div>
+        <div class="row">
+          <button id="num-3">3</button>
+          <button id="num-2">2</button>
+          <button id="num-1">1</button>
+          <button id="divide">/</button>
+        </div>
+        <div class="row">
+          <button id="clear">C</button>
+          <button id="num-0">0</button>
+          <button id="calculate">=</button>
+          <button id="multiply">X</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 003. Number Baseball game -->
+    <section class="webgame" id="numberbaseball">
+      <form id="baseball__form">
+        <input id="baseball__input" class="ipt" type="text">
+        <button class="btn">Submit</button>
+      </form>
+      <div id="baseball__logs"></div>
+    </section>
+
+    <!-- 004. Lotto game -->
+    <section class="webgame" id="lotto">
+      <button class="raffle__button btn active">Raffle!</button>
+      <div id="lotto__result"></div>
+      <div id="lotto__bonus"></div>
+      <button class="reset__button btn active">Reset</button>
+    </section>
+
+    <!-- 005. RSP game -->
+    <section class="webgame" id="RSP">
+      <div id="RSP__computer"></div>
+      <div>
+        <button id="RSP__rock" class="btn">Rock</button>
+        <button id="RSP__scissors" class="btn">Scissors</button>
+        <button id="RSP__paper" class="btn">Paper</button>
+      </div>
+      <div id="RSP__score"></div>
+      <div id="RSP__result"></div>
+    </section>
+
+    <!-- 006. Response Speed Test -->
+    <section class="webgame" id="response">
+      <div id="Response__screen" class="ready">Click to Start!</div>
+      <div id="Response__result"></div>
+      <div id="Response__average"></div>
+      <div id="Response__topfive"></div>
+    </section>
+
+    <!-- 007. Tic-Tac-Toe -->
+    <section class="webgame" id="tictactoe">
+
+    </section>
+
+    <!-- 008. Text RPG -->
+    <section class="webgame" id="textRPG">
+      <form action="" id="start__screen">
+        <input type="text" class="ipt" placeholder="Please enter a name for the character!">
+        <button id="start__btn" class="btn">Game Start!</button>
+      </form>
+      <div class="screen">
+        <div id="hero__stat">
+          <span id="hero__name"></span>
+          <span id="hero__level"></span>
+          <span id="hero__hp"></span>
+          <span id="hero__exp"></span>
+          <span id="hero__atk"></span>
+          <span id="hero__def"></span>
+          <span id="hero__item"></span>
+        </div>
+        <form action="" id="game__menu" style="display: none;">
+          <div id="menu__adventure"></div>
+          <div id="menu__shop"></div>
+          <div id="menu__rest"></div>
+          <div id="menu__end"></div>
+          <input id="menu__input" class="ipt" type="text">
+          <button id="menu__btn" class="btn btn-primary"></button>
+        </form>
+        <form action="" id="battle__menu" style="display: none;">
+          <div id="battle__attack"></div>
+          <div id="battle__heal"></div>
+          <div id="battle__defence"></div>
+          <div id="battle__run"></div>
+          <input id="battle__input" class="ipt" type="text">
+          <button id="battle__btn" class="btn btn-primary"></button>
+        </form>
+        <div id="message"></div>
+        <div id="monster__stat">
+          <span id="monster__name"></span>
+          <span id="monster__hp"></span>
+          <span id="monster__atk"></span>
+          <span id="monster__def"></span>
+        </div>
+    </section>
   </div>
-
-  <!-- 003. Number Baseball game -->
-  <form id="baseball__form">
-    <input type="text" id="baseball__input">
-    <button class="button">Submit</button>
-  </form>
-  <div id="baseball__logs"></div>
-
-  <!-- 004. Lotto game -->
-  <button class="raffle__button button active">Raffle!</button>
-  <div id="lotto__result"></div>
-  <div id="lotto__bonus"></div>
-  <button class="reset__button button active">Reset</button>
-
-  <!-- 005. RSP game -->
-  <div id="RSP__computer"></div>
-  <div>
-    <button id="RSP__rock" class="btn button">Rock</button>
-    <button id="RSP__scissors" class="btn button">Scissors</button>
-    <button id="RSP__paper" class="btn button">Paper</button>
-  </div>
-  <div id="RSP__score">0</div>
-  <div id="RSP__result">0</div>
-
-  <!-- 006. Response Speed Test -->
-  <div id="Response__screen" class="ready">Click to Start!</div>
-  <div id="Response__result"></div>
-  <div id="Response__average"></div>
-  <div id="Response__topfive"></div>
-
-  <!-- 007. Tic-Tac-Toe -->
-
-  <!-- 008. Text RPG -->
-  <form action="" id="start__screen">
-    <input type="text" placeholder="캐릭터의 이름을 입력하세요!">
-    <button id="start__btn" class="btn btn-primary">게임 시작</button>
-  </form>
-  <div class="screen">
-    <div id="hero__stat">
-      <span id="hero__name"></span>
-      <span id="hero__level"></span>
-      <span id="hero__hp"></span>
-      <span id="hero__exp"></span>
-      <span id="hero__atk"></span>
-      <span id="hero__def"></span>
-      <span id="hero__item"></span>
-    </div>
-    <form action="" id="game__menu" style="display: none;">
-      <div id="menu__adventure"></div>
-      <div id="menu__shop"></div>
-      <div id="menu__rest"></div>
-      <div id="menu__end"></div>
-      <input type="text" id="menu__input">
-      <button id="menu__btn" class="btn btn-primary"></button>
-    </form>
-    <form action="" id="battle__menu" style="display: none;">
-      <div id="battle__attack"></div>
-      <div id="battle__heal"></div>
-      <div id="battle__defence"></div>
-      <div id="battle__run"></div>
-      <input type="text" id="battle__input">
-      <button id="battle__btn" class="btn btn-primary"></button>
-    </form>
-    <div id="message"></div>
-    <div id="monster__stat">
-      <span id="monster__name"></span>
-      <span id="monster__hp"></span>
-      <span id="monster__atk"></span>
-      <span id="monster__def"></span>
-    </div>
 </body>
 </html>

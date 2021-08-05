@@ -7,7 +7,7 @@ const $RSPScore = document.querySelector('#RSP__score');
 const $RSPResult = document.querySelector('#RSP__result');
 
 // // RSP img 설정하기
-const IMG_URL = '../img/rsp_removebg.png';
+const IMG_URL = '../img/rsp_bg.png';
 
 $RSPComputer.style.background = `url(${IMG_URL}) -220px 0`; // RSP__rock -> background-position: positionX positionY; 
 // $RSPComputer.style.background = `url(${IMG_URL}) 0 0`; // RSP__scissors -> background-position: positionX positionY; 
