@@ -185,24 +185,152 @@ const add = {
 }
 ```
 
-## 008. 전투 모드 구현하기
+## 008. 전투 모드 구현하기 / 클래스 문법
 
 ```js
 heroInitialStats.attack(monster);
 monster.attack(heroInitialStats);
 ```
 
-이처럼 user의 캐릭터와 임의로 생성된 몬스터 사이의 `attack`과 `defense`, `heal` method를 각각 구현하면 이후 추가적인 캐릭터와 몬스터의 등장에 있어서 지속적으로 method를 생성해야 하기 때문에, 코드의 간결성을 해치게 된다. 따라서 객체와 객체의 상호작용이 많은 경우에는 class를 활용해야 한다.
+이처럼 user의 캐릭터와 임의로 생성된 몬스터 사이의 `attack`과 `defense`, `heal` method를 각각 구현하면 이후 추가적인 캐릭터와 몬스터의 등장에 있어서 지속적으로 method를 생성해야 하기 때문에, 코드의 간결성을 해치게 된다. 따라서 객체와 객체의 상호작용이 많은 경우에는 클래스 문법을 활용해야 한다.
 
-이처럼 지속적으로 유사한 특성의 객체(`monster`, `hero`)를 만들어야 하거나, 상호작용(`attack`, `defense`)이 빈번하게 일어나는 경우에는 class를 활용해 간결하고 효율적인 코드를 작성할 수 있다.
+이처럼 지속적으로 유사한 특성의 객체(`monster`, `hero`)를 만들어야 하거나, 상호작용(`attack`, `defense`)이 빈번하게 일어나는 경우에는 클래스 문법을 활용해 간결하고 효율적인 코드를 작성할 수 있다.
 
-class 이전에는 함수(Factory function)를 활용해 객체를 만들었다.
+클래스 이전에는 함수(Factory function)를 활용해 객체를 만들 수 있었다.
 
 ```js
 function createMonster(name, hp, exp, atk, def) {
-  return { name, hp, exp, atk, def };
+  return {
+    name,
+    hp,
+    exp,
+    atk,
+    def,
+    attack(monster) {
+      monster.hp -= this.atk;
+      this.hp -= monster.atk;
+    },
+    heal(monster) {
+      this.hp += 20;
+      this.hp -= monster.atk;
+    },
+  };
 }
 const monster1 = createMonster("slime", 25, 10, 10, 5);
 const monster2 = createMonster("slime", 45, 20, 10, 5);
 const monster3 = createMonster("slime", 50, 15, 30, 10);
+```
+
+다만, 객체를 생성할 때 서로 참조 관계가 아니라 다른 객체여야 한다는 점이 중요하다. 같은 객체를 참조하여 반환하면, 하나를 수정할 때 다른 객체도 모두 수정되기 때문에 위 함수(Factory function)은 매번 새로운 객체를 반환할 수 있도록 객체 리터럴로 return 값을 만들었다.
+
+나아가 `this`와 생성자 함수를 활용해 객체를 만들 수도 있다.
+
+```js
+function Monster(name, hp, exp, atk, def) {
+  this.name = name;
+  this.hp = hp;
+  this.exp = exp;
+  this.atk = atk;
+  this.def = def;
+}
+
+Monster.prototype.attack = function (monster) {
+  monster.hp -= this.atk;
+  this.hp -= monster.atk;
+};
+
+Monster.prototype.heal = function (monster) {
+  this.hp += 20;
+  this.hp -= monster.atk;
+};
+
+const monster1 = new Monster("slime", 25, 10, 10, 5);
+const monster2 = new Monster("slime", 45, 20, 10, 5);
+const monster2 = new Monster("slime", 50, 15, 30, 10);
+```
+
+생성자 함수 앞에 `new` 키워드를 사용하면, `this`가 `window`가 아니라, 가상의 새로운 객체를 가리키게 되고, 해당 생성자 함수의 `return` 값이 해당 새로운 객체의 속성 값을 수정하여 객체가 된다. 따라서 생성자 함수를 활용하기 위해서는 `new`가 필수적이다.(`new`를 붙이지 않고 생성자 함수를 호출하면, `this`가 `window`가 되어 `window.name`이 변경되기 때문에 반드시 `new`를 붙여야 한다.)
+
+첫 글자로 대문자를 사용하는 것이 반드시 지켜야할 규칙은 아니지만, `new Set();`, `new Date();` 와 같이 대문자를 사용하는 것이 암묵적인 약속이다.
+
+이후 생성자 함수를 더 편하게 사용할 수 있도록 클래스 문법을 도입되었다.
+
+```js
+class Monster {
+  constructor(name, hp, exp, atk, def) {
+    this.name = name;
+    this.hp = hp;
+    this.exp = exp;
+    this.atk = atk;
+    this.def = def;
+  }
+}
+
+const monster1 = new Monster("slime", 25, 10, 10, 5);
+const monster2 = new Monster("slime", 45, 20, 10, 5);
+const monster3 = new Monster("slime", 50, 15, 30, 10);
+```
+
+`class` 예약어로 클래스를 선언하고, `constructor` method 내부에 기존 코드를 작성하면 된다. 이후 클래스에 `new`를 붙여 호출하면 `constructor` 함수가 실행되고, 객체가 반환된다.(`new`를 생략한 경우 error 발생) 여기서 `this`는 생성된 객체 자기 자신을 가리키게 된다.
+
+이러한 클래스 문법에서는 객체의 method(화살표 함수 불가능)를 같이 묶을 수 있다는 점이 큰 장점이다.
+
+```js
+class Monster {
+  constructor(name, hp, exp, atk, def) {
+    this.name = name;
+    this.hp = hp;
+    this.exp = exp;
+    this.atk = atk;
+    this.def = def;
+  }
+  attack(monster) {
+    monster.hp -= this.atk;
+    this.hp -= monster.atk;
+  }
+  heal(monster) {
+    this.hp += 20;
+    this.hp -= monster.atk;
+  }
+}
+```
+
+Factory function의 경우에는 객체를 생성할 때마다 비효율적으로 `attack`, `heal` method가 새로 생성된다. 즉, 재사용해도 되는 method를 계속해서 새로 생성하기 때문에 비효율적이다.
+
+생성자 함수에 method를 추가할 때는, `prototype` 속성을 활용해 prototype method로 만들어야 했다. 이렇게 생성된 prototype method는 Factory function과 달리 재사용되지만, 생성자 함수와 prototype method가 하나로 묶여있지 않아 코드의 간결함을 해칠 수 있다.
+
+두 가지 문제점을 해결한 것이 클래스 문법의 method 선언 방식이다. 즉, method를 생성자 함수와 함께 선언하고, 이를 재사용하여 코드의 효율성과 간결성을 모두 가지고 있는 method 생성 방식이다.
+
+클래스 문법을 활용하면, 각 클래스간 정보를 교차로 작성하여 상호작용을 하기에 좋다.
+
+## 009. this
+
+기본적으로 `this`는 `window`를 의미하고, 클래스 객체 내의 `this`는 해당 클래스 객체를 의미하지만, 클래스 객체 내의 모든 `this`가 모두 해당 클래스 객체를 의미하지는 않는다. `addEventListener`의 `this`는 해당 tag를 의미한다.
+
+이렇게 각기 다른 `this`를 통일하기 위해 `_this`, `self`, `that` 등 변수에 `this`를 할당하는 경우도 있다.
+
+다만, 화살표 함수를 활용해서 `addEventListener`의 `this`를 활용하면, 화살표 함수 특성상 `this`가 해당 화살표 함수 밖의 `this`가 되기 때문에 문제를 해결할 수 있다.
+
+```js
+document.addEvnetListener("click", function () {
+  console.log(this); // document
+});
+
+document.addEvnetListener("click", () => {
+  console.log(this); // window
+});
+```
+
+함수에 `bind` method를 활용해 `this`를 변경할 수 있다. 화살표 함수는 `bind` method를 사용할 수 없다. 화살표 함수는 그 특성 상 무조건 화살표 함수 밖의 `this`를 가지고 온다.
+
+```js
+function a() {
+  console.log(this);
+}
+a.bind(document)(); // document
+
+const b = () => {
+  console.log(this);
+};
+b.bind(document)(); // window
 ```
