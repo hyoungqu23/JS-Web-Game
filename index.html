@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="./src/main.css">
 
   <!-- ========== JavaScript ========== -->
-  <script src="./script/timer.js" defer></script>
+  <!-- <script src="./script/timer.js" defer></script> -->
   <script src="./script/word-relay.js" defer></script>
   <script src="./script/calculator.js" defer></script>
   <script src="./script/number-baseball.js" defer></script>
@@ -129,12 +129,16 @@
     <!-- 008. Text RPG -->
     <section class="webgame" id="textRPG">
       <form action="" id="start__screen">
-        <input type="text" class="ipt" placeholder="Please enter a name for the character!">
+        <input id="start__input" class="ipt" type="text" placeholder="Please enter a name for the character!">
+        <button id="warrior__btn" class="btn">warrior</button>
+        <button id="archer__btn" class="btn">archer</button>
+        <button id="assassin__btn" class="btn">assassin</button>
         <button id="start__btn" class="btn">Game Start!</button>
       </form>
       <div class="screen">
         <div id="hero__stat">
           <span id="hero__name"></span>
+          <span id="hero__job"></span>
           <span id="hero__level"></span>
           <span id="hero__hp"></span>
           <span id="hero__exp"></span>
@@ -143,20 +147,20 @@
           <span id="hero__item"></span>
         </div>
         <form action="" id="game__menu" style="display: none;">
-          <div id="menu__adventure"></div>
-          <div id="menu__shop"></div>
-          <div id="menu__rest"></div>
-          <div id="menu__end"></div>
+          <button id="menu__adventure" class="btn">adventure</button>
+          <button id="menu__shop" class="btn">shop</button>
+          <button id="menu__rest" class="btn">rest</button>
+          <button id="menu__end" class="btn">end</button>
           <input id="menu__input" class="ipt" type="text">
-          <button id="menu__btn" class="btn btn-primary"></button>
+          <button id="menu__btn" class="btn btn-primary">Go!</button>
         </form>
         <form action="" id="battle__menu" style="display: none;">
           <div id="battle__attack"></div>
           <div id="battle__heal"></div>
-          <div id="battle__defence"></div>
+          <div id="battle__defense"></div>
           <div id="battle__run"></div>
           <input id="battle__input" class="ipt" type="text">
-          <button id="battle__btn" class="btn btn-primary"></button>
+          <button id="battle__btn" class="btn btn-primary">Fight!</button>
         </form>
         <div id="message"></div>
         <div id="monster__stat">
