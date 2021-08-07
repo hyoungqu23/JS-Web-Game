@@ -37,23 +37,37 @@
 </head>
 <body>
   <div class="scroll__container">
+    <!-- HEADER -->
+    <!-- <header>
+      <div class="navbar__container">
+        <div class="navbar__logo">
+          <img src="./img/logo.png" alt="Logo" />
+          <h3>Danvo</h3>
+        </div>
+        <div class="navbar__links">
+          <ul>
+            <li><a href="#">Word</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Testimonials</a></li>
+          </ul>
+        </div>
+      </div>
+    </header> -->
     <!-- ========== 001. Word-relay game ========== -->
     <section class="webgame" id="word-relay">
       <h1>Word-relay</h1>
-      <form id='number__form'>
-        <input id='number' class="ipt" type="number" min="1" max="5" placeholder="Number of Participants">
-        <button class="number__btn btn">Submit</button>
-      </form>
+      <input id='number__input' class="ipt" type="number" min="1" max="5" placeholder="Number of Participants">
+      <button class="number__btn btn">Submit</button>
+      <div id="number"></div>
       <div>Participant <span id="order">1</span></div>
       <div>Suggestion Word: <span id="word"></span></div>
-      <form id='word__form'>
-        <input id='input__word' class="ipt" type="text" placeholder="Word">
-        <button class="word__btn btn">Submit</button>
-      </form>
+      <input id='word__input' class="ipt" type="text" placeholder="Word">
+      <button class="word__btn btn">Submit</button>
     </section>
 
     <!-- ========== 002. Calculator ========== -->
     <section class="webgame" id="calculator">
+      <h1>Calculator</h1>
       <div class="calculator">
         <input id="operator" readonly>
         <input id="result" type="number" readonly>
@@ -86,6 +100,7 @@
 
     <!-- 003. Number Baseball game -->
     <section class="webgame" id="numberbaseball">
+      <h1>Number-baseball game</h1>
       <form id="baseball__form">
         <input id="baseball__input" class="ipt" type="text">
         <button class="btn">Submit</button>
@@ -95,6 +110,7 @@
 
     <!-- 004. Lotto game -->
     <section class="webgame" id="lotto">
+      <h1>Lotto Draw</h1>
       <button class="raffle__button btn active">Raffle!</button>
       <div id="lotto__result"></div>
       <div id="lotto__bonus"></div>
@@ -103,6 +119,7 @@
 
     <!-- 005. RSP game -->
     <section class="webgame" id="RSP">
+      <h1>Rock-Scissors-Paper</h1>
       <div id="RSP__computer"></div>
       <div>
         <button id="RSP__rock" class="btn">Rock</button>
@@ -115,6 +132,7 @@
 
     <!-- 006. Response Speed Test -->
     <section class="webgame" id="response">
+      <h1>Response Speed Test</h1>
       <div id="Response__screen" class="ready">Click to Start!</div>
       <div id="Response__result"></div>
       <div id="Response__average"></div>
@@ -123,11 +141,13 @@
 
     <!-- 007. Tic-Tac-Toe -->
     <section class="webgame" id="tictactoe">
+      <h1>Tic-Tac-Toe</h1>
 
     </section>
 
     <!-- 008. Text RPG -->
     <section class="webgame" id="textRPG">
+      <h1>Text RPG game</h1>
       <form action="" id="start__screen">
         <input id="start__input" class="ipt" type="text" placeholder="Please enter a name for the character!">
         <button id="warrior__btn" class="btn">warrior</button>
