@@ -1,51 +1,61 @@
 // Word-relay
-
-const $participant = document.querySelector('#number');
+const $numberForm = document.querySelector('#number__form');
 const $numberButton = document.querySelector('.number__btn');
+const $input = document.querySelector('#word__input');
+const $numberInput = document.querySelector('#number__input');
+const $number= document.querySelector('#number');
 
-const onNumberBtnClick = () => {
-  const number = $participant.value;
-}
+let number;
 
-numberButton.addEventListener('click', onNumberBtnClick);
-
-if (number) {
-  const $input = document.querySelector('#input__word');
-  const $wordButton = document.querySelector('.word__btn');
-  const $order = document.querySelector('#order');
-  const $word = document.querySelector('#word');
-
-  let word; // 제시어
-  let newWord;  // 새로 입력한 단어
-
-  const onInput = function(event) {
-    newWord = event.target.value;
-  };
-
-  // 최적화
-  const onBtnClick = function() {
-    if (!word || word[word.length - 1] === newWord[0]) {  // 제시어가 비어 있거나 단어가 올바른가?
-      // 비어 있거나 올바르다.
-      word = newWord; // 입력한 단어를 제시어로 등록(변수 변경)
-      $word.textContent = word; // (화면 변경) tag 대다수는 textContent로 내용 조회 가능.
-      
-      const order = Number($order.textContent); // 현재 순서
-      if (order + 1 > number) { // 현재 순서 + 1이 참가자 수를 초과하는가?
-        // 초과한다.
-        $order.textContent = 1; // 다음 순서를 1로 변경.
+$numberButton.addEventListener('click', (event) => {
+  // event.preventDefault();
+  number = Number($numberInput.value);
+  $number.textContent = number;
+  $numberButton.style.display = 'none';
+  $numberInput.style.display = 'none';
+  $number.style.display = 'none';
+  
+  number = Number($number.textContent);
+  
+  if (number) {
+    const $wordButton = document.querySelector('.word__btn');
+    const $order = document.querySelector('#order');
+    const $word = document.querySelector('#word');
+    let word; // 제시어
+    let newWord;  // 새로 입력한 단어
+    console.log(number)
+    
+    const onInput = function(event) {
+      newWord = event.target.value;
+    };
+  
+    // 최적화
+    const onBtnClick = function() {
+      if (!word || word[word.length - 1] === newWord[0]) {  // 제시어가 비어 있거나 단어가 올바른가?
+        // 비어 있거나 올바르다.
+        word = newWord; // 입력한 단어를 제시어로 등록(변수 변경)
+        $word.textContent = word; // (화면 변경) tag 대다수는 textContent로 내용 조회 가능.
+        
+        const order = Number($order.textContent); // 현재 순서
+        if (order + 1 > number) { // 현재 순서 + 1이 참가자 수를 초과하는가?
+          // 초과한다.
+          $order.textContent = 1; // 다음 순서를 1로 변경.
+        } else {
+          // 초과하지 않는다.
+          $order.textContent = order + 1; // 다음 순서를 (현재 순서 + 1)로 변경.
+        }
       } else {
-        // 초과하지 않는다.
-        $order.textContent = order + 1; // 다음 순서를 (현재 순서 + 1)로 변경.
+        alert('올바르지 않은 단어입니다!!')
       }
-    } else {
-      alert('올바르지 않은 단어입니다!!')
-    }
-    $input.value = '';  // input 비우기 input 등 입력 tag의 경우 value로 내용 조회 가능.
-    $input.focus();  // input tag에 focus 두기
+      
+      $input.value = '';  // input 비우기 input 등 입력 tag의 경우 value로 내용 조회 가능.
+      $input.focus();  // input tag에 focus 두기
+    };
+    $input.addEventListener('input', onInput);
+    $wordButton.addEventListener('click', onBtnClick);
   };
+});
 
-  $input.addEventListener('input', onInput);
-  $wordButton.addEventListener('click', onBtnClick);
 
 
 
