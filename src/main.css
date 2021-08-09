@@ -60,6 +60,13 @@ section.webgame {
 }
 
 /* Pairing Card */
+#pairingcard__wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, 100px);
+  grid-template-rows: repeat(4, 120px);
+
+}
+
 .pairing__card {
   display: inline-block;
   margin-right: 20px;

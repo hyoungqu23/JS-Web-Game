@@ -406,7 +406,7 @@ class B extends A {}
 
 ## 000. FlowChart
 
-<img src='../img/flowChart/FlowChart_PairingCard' alt='FlowChart'>
+<!-- <img src='../img/flowChart/FlowChart_PairingCard' alt='FlowChart'> -->
 
 ## 001. Rules
 
@@ -419,3 +419,56 @@ class B extends A {}
 5. 카드 2장이 일치하면 유지, 불일치하면 다시 뒷면으로 뒤집는다.
 6. 전부 맞춘 경우 게임 진행 시간과 승리 메시지를 보여준다.
 7. Top7 기록을 남긴다.
+
+## 002. cards 생성하기
+
+총 20장의 card를 생성하고, 각 card 마다 1 ~ 10 숫자를 작성하고, 해당 숫자의 색을 Yellow, White로 설정한다.
+
+### `concat`
+
+concat method를 활용하면, 얕은 복사를 통해 새로운 배열을 만들어 낼 수 있다.
+
+```js
+const arrCopy = arr.concat();
+```
+
+또한, `concat`의 인수로 단순 숫자값이나 배열을 넣으면 하나의 배열로 추가된다.
+
+```js
+const arr = [1];
+arr.concat(2);
+arr.concat([3]);
+
+console.log(arr);
+
+< [1, 2, 3]
+```
+
+### Fisher-Yates Shuffle
+
+```js
+function cardShuffle() {
+  for (let i = 0; numbersCopy.length > 0; i++) {
+    const randomIndex = Math.floor(Math.random() * numbersCopy.length);
+    shuffled = shuffled.concat(numbersCopy.splice(randomIndex, 1));
+  }
+}
+```
+
+## 003. 카드 잠시 보여주고 뒤집기
+
+게임 시작 후, 모든 카드에 `flipped` className을 추가했다가 제거하면 된다.
+
+### querySelectorAll, forEach
+
+이 경우 모든 카드를 선택하기 위해 `document.querySelectorAll('.pairing__card')`를 활용한다. 이는 기존의 `querySelector`와 다르게 배열을 반환한다. 따라서, 모든 카드를 하나하나 공개하기 위해서는 배열의 `forEach` method를 활용할 수 있다.
+
+```js
+document.querySelectorAll(".pairing__card").forEach((card, index) => {
+  setTimeout(() => {
+    card.classList.add("flipped");
+  }, 1000 + 100 * index);
+});
+```
+
+각각 다른 시간에 공개되게끔 ms에 `index`를 활용하여 약간의 차이를 둘 수 있다.
