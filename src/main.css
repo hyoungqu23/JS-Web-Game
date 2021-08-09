@@ -42,7 +42,7 @@ body .scroll__container {
 }
 
 section.webgame {
-  width: 50%;
+  /* width: 50%; */
   height: 100vh;
   scroll-snap-align: start;
   display: grid;

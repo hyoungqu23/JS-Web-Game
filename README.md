@@ -334,3 +334,75 @@ const b = () => {
 };
 b.bind(document)(); // window
 ```
+
+1. 노트북에 빠지겠다 아주 거북목되서 미니는 거북이 히재는 거북목 할듯
+2. 시간에 문제가 없다면 확인하면서 조건 작성하는 태도 gooooooooooood!
+3. 생각하는 것 보다 함수에서 시간 더 걸림
+4.
+
+### 010. 클래스 상속
+
+Hero 클래스와 Monster 클래스는 공통되어 중복되는 부분이 많다. 이를 새로운 클래스로 만들고, Hero 클래스와 Monster 클래스가 상속받아 사용할 수 있다.
+
+`extends` 예약어를 활용해 상속 관계를 연결하고, `super()`를 통해 부모 클래스의 constructor를 상속받아 활용할 수 있고, method 또한 바로 사용할 수 있다. 중복되지 않은 코드를 자식 클래스에 작성하면 된다.
+
+```js
+class Unit {}
+class Hero extends Unit {
+  constructor(game, name) {
+    super(game, name, 100, 0, 20, 10);  //  부모 클래스의 생성자 호출
+    this.lv = 1;  // 그 외 속성
+  }
+}
+class Monster extends Unit {
+  ...
+  attack(target) {
+    super.attack(target); // 부모 클래스의 method 호출
+    console.log('몬스터가 공격'); // 그 외 동작
+  }
+}
+```
+
+다중 상속은 불가능하나, 상속 속의 상속은 가능하다.
+
+```js
+class A {}
+class B {}
+
+// class C extends A, B {} : 다중 상속 불가능
+class C extends B {}
+class B extends A {}
+```
+
+### 011. 정리
+
+1. `window`
+   `window` 객체는 브라우저를 가리키는 객체로, 브라우저가 제공하는 기본 객체와 함수들은 대부분 `window` 객체 안에 들어있다. `document`, `console`, `screen` 객체도 원래는 `window.document`, `window.console`, `window.screen`이나, 생략하여 사용한다.
+
+   참고로, `globalThis`가 `window`를 가리킨다.(node.js에서는 `globalThis`가 `global`을 가리킨다.)
+
+2. `this`
+   `this`는 상황에 따라 다른 값을 가지지만, 기본적으로 `this`는 `window` 객체를 가리킨다.(`this` === `globalThis`)
+
+   1. 객체를 통해 `this`를 사용하는 경우 `this`는 해당 객체를 가리킨다.
+   2. 특정 method는 callback 함수의 `this`를 변경한다.(`addEventListener`의 `this`는 해당 tag를 의미한다.)
+   3. `this`가 변경되는 것을 원치 않을 때 화살표 함수를 활용해 기존 `this`를 유지할 수 있다.
+
+3. 참조, 얕은 복사, 깊은 복사
+   '복사'는 어떤 값을 다른 변수에 대입할 때 기존 값과 참조 관계가 끊기는 것을 의미한다. 따라서 객체가 아닌 원시값(string, number, boolean, `null`, `undefined`)는 애초부터 참조 관계가 없기 때문에 복사된다.
+
+   객체를 단순히 대입하면, 참조가 되는데, 복사를 하기 위해서는 두 가지 방식이 존재한다. 먼저, 얕은 복사는 중첩된 객체가 있을 때, 가장 외부의 객체만 복사되고, 내부 객체는 참조 관계를 유지하는 것을 의미한다. 얕은 복사는 `...` 즉, spread 문법을 활용해 할 수 있다.
+
+   이와 달리 깊은 복사는 내부 객체까지 참조 관계가 끊겨 복사되는 것을 의미한다. 보통 lodash 라이브러리를 활용해 깊은 복사를 한다.
+
+4. 클래스
+   클래스는 객체를 생성하는 템플릿 문법으로, `class` 예약어로 클래스를 선언하고, `constructor` method 내부에 기존 코드를 넣는다. 이러한 클래스는 서로 상호작용할 수 있으며, 상속을 통해 중복을 제거할 수 있다.
+
+   `new`를 통해 호출하면 `constructor` 함수가 실행되고, 객체가 반환된다. 이때 내부의 `this`는 생성된 객체 자기 자신을 가리킨다.
+
+5. 클래스 상속
+   클래스끼리 `extends` 예약어를 통해 상속할 수 있다. 공통되는 속성과 method를 부모 클래스에 작성해 상속받을 수 있다.
+
+   자식 클래스의 `constructor`에서는 `super()` 함수를 통해 부모 클래스에 접근할 수 있고, 부모 클래스의 생성자에 인수를 전달할 수 있다. 만약 공통되지 않은 속성이 있는 경우에는 자식 클래스에 따로 선언하면 된다.
+
+   자식 클래스의 method에서도 `super.methodName()`를 호출하여 부모 클래스의 method를 호출할 수 있다.

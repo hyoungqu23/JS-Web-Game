@@ -121,8 +121,24 @@
 
 // ==================== 클래스 문법 활용 ==================== //
 const $startScreen = document.querySelector('#start__screen');
+const $startInput = document.querySelector('#start__input');
+const $warriorBtn = document.querySelector('#warrior__btn');
+const $archorBtn = document.querySelector('#archer__btn');
+const $assassinBtn = document.querySelector('#assassin__btn');
 const $gameMenu = document.querySelector('#game__menu');
+const $gameInput = document.querySelector('#menu__input');
+const $adventureBtn = document.querySelector('#menu__adventure');
+const $shopBtn = document.querySelector('#menu__shop');
+const $restBtn = document.querySelector('#menu__rest');
+const $endBtn = document.querySelector('#menu__end');
+
 const $battleMenu = document.querySelector('#battle__menu');
+const $battleInput = document.querySelector('#battle__input');
+const $attackBtn = document.querySelector('#battle__attack');
+const $healBtn = document.querySelector('#battle__heal');
+const $defenseBtn = document.querySelector('#battle__defense');
+const $runBtn = document.querySelector('#battle__run');
+
 const $heroName = document.querySelector('#hero__name');
 const $heroJob = document.querySelector('#hero__job');
 const $heroLevel = document.querySelector('#hero__level');
@@ -150,31 +166,31 @@ class Game {
       { name: 'revenant', hp: 100, exp: 50, atk: 30, def: 15, },
       { name: 'devil', hp: 150, exp: 70, atk: 50, def: 35, },
     ];
-    this.heroJobList = [
-      { job: 'warrior', atk: 10, def: 20, },
-      { job: 'archer', atk: 20, def: 10, },
-      { job: 'assassin', atk: 30, def: 5, },
-    ];
+    // this.heroJobList = [
+    //   { job: 'warrior', atk: 10, def: 20, },
+    //   { job: 'archer', atk: 20, def: 10, },
+    //   { job: 'assassin', atk: 30, def: 5, },
+    // ];
     this.start(name); // 게임 시작
   }
   start(name) { // 게임 시작 후 특정 동작 수행
-    console.log(this);
     $gameMenu.addEventListener('submit', this.onGameMenuInput);
     $battleMenu.addEventListener('submit', this.onBattleMenuInput);
-    this.changeScreen('game__menu');
-    this.hero = new Hero(this, name);
+    this.changeScreen('game');
+    this.hero = new Hero(this, name, job);
     this.updateHeroStat();
+    this.showMessage('');
   }
   changeScreen(screen) {
-    if (screen === 'start__screen') {
+    if (screen === 'start') {
       $startScreen.style.display = 'block';
       $gameMenu.style.display = 'none';
       $battleMenu.style.display = 'none';
-    } else if (screen === 'game__menu') {
+    } else if (screen === 'game') {
       $startScreen.style.display = 'none';
       $gameMenu.style.display = 'block';
       $battleMenu.style.display = 'none';
-    } else if (screen === 'battle__menu') {
+    } else if (screen === 'battle') {
       $startScreen.style.display = 'none';
       $gameMenu.style.display = 'none';
       $battleMenu.style.display = 'block';
@@ -184,7 +200,7 @@ class Game {
     event.preventDefault();
     const input = event.target['menu__input'].value;
     if (input === 'adventure') {
-      this.changeScreen('battle__menu');
+      this.changeScreen('battle');
       const randomIndex = Math.floor(Math.random() * this.monsterList.length);
       const randomMonster = this.monsterList[randomIndex];
       this.monster = new Monster(
@@ -200,22 +216,74 @@ class Game {
     } else if (input === 'shop') {
 
     } else if (input === 'rest') {
-      
+      const { hero } = this;
+      hero.hp = hero.maxHp;
+      this.updateHeroStat();
+      this.showMessage(`${hero.name}(Lv. ${hero.lv}) got enough rest.`)
     } else if (input === 'end') {
-      this.changeScreen('game__menu');
+      this.showMessage('');
+      this.quit();
     }
   }
   onBattleMenuInput = (event) => {
     event.preventDefault();
     const input = event.target['battle__input'].value;
     if (input === 'attack') {
-      this.changeScreen('battle__menu');
+      const { hero, monster } = this;
+      hero.attack(monster);
+      monster.attack(hero);
+      if (hero.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has been killed. Create a new character.`);
+        this.quit();
+      } else if (monster.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has finished ${monster.name}. ${hero.name}(Lv. ${hero.lv}) got ${monster.exp} Exp.`);
+        hero.getExp(monster.exp);
+        this.monster = null;
+        this.changeScreen('game');
+      } else {  // 전투 진행중
+        this.showMessage(`${hero.name} attacked the monster as much as ${(hero.atk - 0.5 * monster.def >= 0) ? hero.atk - 0.5 * monster.def : 0} damage, and received ${monster.atk - 0.5 * hero.def} damage.`);
+      }
+      this.updateHeroStat();
+      this.updateMonsterStat();
     } else if (input === 'heal') {
-
+      const { hero, monster } = this;
+      hero.hp = Math.min(hero.maxHp, hero.hp + 20);
+      monster.attack(hero);
+      if (hero.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has been killed. Create a new character.`);
+        this.quit();
+      } else if (monster.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has finished ${monster.name}. ${hero.name}(Lv. ${hero.lv}) got ${monster.exp} Exp.`);
+        hero.getExp(monster.exp);
+        this.monster = null;
+        this.changeScreen('game');
+      } else {  // 전투 진행중
+        this.showMessage(`${hero.name} received ${monster.atk - 0.5 * hero.def} damage.`);
+      }
+      this.updateHeroStat();
+      this.updateMonsterStat();
     } else if (input === 'defense') {
-      
+      const { hero, monster } = this;
+      hero.defense(monster);
+      monster.attack(hero);
+      if (hero.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has been killed. Create a new character.`);
+        this.quit();
+      } else if (monster.hp <= 0) {
+        this.showMessage(`${hero.name}(Lv. ${hero.lv}) has finished ${monster.name}. ${hero.name}(Lv. ${hero.lv}) got ${monster.exp} Exp.`);
+        hero.getExp(monster.exp);
+        this.monster = null;
+        this.changeScreen('game');
+      } else {  // 전투 진행중
+        this.showMessage(`${hero.name} attacked the monster as much as ${(hero.atk - 0.5 * monster.def >= 0) ? hero.atk - 0.5 * monster.def : 0} damage, and received ${monster.atk - 0.5 * hero.def} damage.`);
+      }
+      this.updateHeroStat();
+      this.updateMonsterStat();
     } else if (input === 'run') {
-      
+      this.changeScreen('game');
+      this.showMessage(`${this.hero.name}(Lv. ${this.hero.lv}) ran away.`);
+      this.monster = null;
+      this.updateMonsterStat();
     }
   }
   updateHeroStat() {
@@ -232,56 +300,46 @@ class Game {
     }
     $heroName.textContent = hero.name;
     $heroLevel.textContent = `Lv: ${hero.lv}`;
-    $heroJob.textContent = hero.job;
+    $heroJob.textContent = `Class: ${hero.job}`;
     $heroHp.textContent = `HP: ${hero.hp} / ${hero.maxHp}`;
     $heroExp.textContent = `EXP: ${hero.exp} / ${15 * hero.lv}`;
     $heroAtk.textContent = `ATK: ${hero.atk}`;
     $heroDef.textContent = `DEF: ${hero.def}`;
   }
-}
-
-// Hero 클래스 생성하기
-class Hero {
-  constructor(game, name) {
-    this.game = game;
-    this.name = name;
-    this.lv = 1;
-    this.maxHp = 100;
-    this.hp = 100;
-    this.exp = 0;
-    this.atk = 10;
-    this.def = 10;
-  }
-  attack(target) {
-    if (this.atk >= target.def) {
-      target.hp -= (this.atk - target.def*0.5);
-    } else {
-      target.hp -= 0;
+  updateMonsterStat() {
+    const { monster } = this;
+    if (monster === null) {
+      $monsterName.textContent = '';
+      $monsterHp.textContent = '';
+      $monsterAtk.textContent = '';
+      $monsterDef.textContent = '';
+      return;
     }
+    $monsterName.textContent = monster.name;
+    $monsterHp.textContent = `HP: ${monster.hp} / ${monster.maxHp}`;
+    $monsterAtk.textContent = `ATK: ${monster.atk}`;
+    $monsterDef.textContent = `DEF: ${monster.def}`;
   }
-  heal(monster) {
-    this.hp += 20;
-    if (monster.atk >= this.def) {
-      this.hp -= (monster.atk - this.def*0.5);
-    } else {
-      this.hp -= 0;
-    }
+  showMessage(text) {
+    $message.textContent = text;
   }
-  defense(target) {
-    if (target.atk >= this.def) {
-      this.hp -= (monster.atk - this.def);
-    } else {
-      $message.textContent = `Defense Success!`;
-    }
+  quit() {  // 게임 종료
+    this.hero = null;
+    this.monster = null;
+    this.updateHeroStat();
+    this.updateMonsterStat();
+    $gameMenu.removeEventListener('submit', this.onGameMenuInput);
+    $battleMenu.removeEventListener('submit', this.onBattleMenuInput);
+    this.changeScreen('start');
+    game = null;
   }
 }
 
-// Monster 클래스 생성하기
-class Monster {
+// Unit 클래스 생성하기
+class Unit {
   constructor(game, name, hp, exp, atk, def) {
     this.game = game;
     this.name = name;
-    this.lv = 1;
     this.maxHp = hp;
     this.hp = hp;
     this.exp = exp;
@@ -289,14 +347,76 @@ class Monster {
     this.def = def;
   }
   attack(target) {
-    target.hp -= (this.atk - target.def*0.5);
+    if (this.atk >= target.def * 0.5) {
+      target.hp -= (this.atk - target.def * 0.5);
+    } else {
+      target.hp -= 0;
+    }
   }
 }
 
-let game = null;
+// Hero 클래스 생성하기
+class Hero extends Unit {
+  constructor(game, name, job) {
+    super(game, name, 100, 0, 20, 10);
+    this.lv = 1;
+    this.job = job;
+  }
+  defense(target) {
+    if (target.atk >= this.def * 0.5) {
+      this.hp -= (target.atk - this.def*0.5);
+    } else {
+      this.showMessage('Defense Success!');
+    }
+  }
+  getExp(exp) {
+    this.exp += exp;
+    if (this.exp >= this.lv * 15) {
+      this.exp -= this.lv * 15;
+      this.lv++;
+      this.maxHp += 10;
+      this.atk += 5;
+      this.def += 5;
+      this.hp = this.maxHp;
+      this.game.showMessage(`Level UP! ${this.name}(Lv. ${this.lv}) has become stronger.`);
+    }
+  }
+}
+
+// Monster 클래스 생성하기
+class Monster extends Unit {
+  constructor(game, name, hp, exp, atk, def) {
+    super(game, name, hp, exp, atk, def);
+  }
+}
+
+let job;
+const selectJob = (event) => {
+  job = event.target.textContent;
+};
+
+const writeInput = ($input) => (event) => {
+  $input.value = event.target.textContent;
+}
+
 // Game 시작하기
+let game = null;
 $startScreen.addEventListener('submit', (event) => {
   event.preventDefault();
   const name = event.target['start__input'].value;
   game = new Game(name);
 });
+
+$warriorBtn.addEventListener('click', selectJob);
+$archorBtn.addEventListener('click', selectJob);
+$assassinBtn.addEventListener('click', selectJob);
+
+$adventureBtn.addEventListener('click', writeInput($gameInput));
+$shopBtn.addEventListener('click', writeInput($gameInput));
+$restBtn.addEventListener('click', writeInput($gameInput));
+$endBtn.addEventListener('click', writeInput($gameInput));
+
+$attackBtn.addEventListener('click', writeInput($battleInput));
+$healBtn.addEventListener('click', writeInput($battleInput));
+$defenseBtn.addEventListener('click', writeInput($battleInput));
+$runBtn.addEventListener('click', writeInput($battleInput));
