@@ -406,7 +406,7 @@ class B extends A {}
 
 ## 000. FlowChart
 
-<!-- <img src='../img/flowChart/FlowChart_PairingCard' alt='FlowChart'> -->
+<img src='../img/flowChart/FlowChart_PairingCard.png' alt='FlowChart'>
 
 ## 001. Rules
 
@@ -472,3 +472,9 @@ document.querySelectorAll(".pairing__card").forEach((card, index) => {
 ```
 
 각각 다른 시간에 공개되게끔 ms에 `index`를 활용하여 약간의 차이를 둘 수 있다.
+
+## 004. 카드 클릭해 짝 맞추기
+
+### event Bubbling
+
+카드에 직접 eventListener를 각각 추가하는 것보다 event Bubbling을 활용하는 것이 더 좋을 수도 있다. 하지만, 이 경우 `pairingcard__wrapper`에 eventListener를 추가하게 되면, 카드와 카드 사이 여백을 클릭해도 event가 발생하기 때문에, 각각 추가하는 방법이 더 낫다.

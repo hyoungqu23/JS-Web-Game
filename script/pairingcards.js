@@ -6,6 +6,7 @@ const numbers = Array(10).fill().map((element, index) => index + 1);
 
 let numbersCopy = numbers.concat(numbers);  // 2 pair cards(1 ~ 10): 새로운 배열로 생성.
 let shuffled = [];
+let clickable;
 
 // Fisher-Yates Shuffle
 function cardShuffle() {
@@ -37,21 +38,30 @@ function createCard(i) {
   return card;
 }
 
+function onClickCard() {
+  
+}
+
 function startGame() {
   clickable = false;
 
+  // cards 생성하기
   cardShuffle();
   for (let i = 0; i < total; i++) {
     const card = createCard(i);
+    // card click
+    card.addEventListener('click', onClickCard);
     $pairingcardWrapper.appendChild(card);
   }
 
+  // cards 순서대로 앞면 보여주기
   document.querySelectorAll('.pairing__card').forEach((card, index) => {
     setTimeout(() => {
       card.classList.add('flipped');
     }, 1000 + 100 * index);
   });
 
+  // cards 모두 뒷면 보여주기
   setTimeout(() => {
     document.querySelectorAll('.pairing__card').forEach((card) => {
       card.classList.remove('flipped');

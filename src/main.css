@@ -3,6 +3,8 @@
   margin: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  /* background: #000000;
+  color: #ffffff; */
   /* scroll-behavior: smooth; */
 }
 
@@ -25,11 +27,13 @@
   border: none;
   border-radius: 25px;
   overflow: hidden;
+  font-size: 1.1rem;
   text-transform: uppercase;
 }
 
 .btn:hover {
   box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.2), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.5);
+  font-size: .75rem;
 }
 
 /* main #00019E point rgba(255, 169, 0) title #0F1115 desc #46474B footer #000129  */
@@ -49,6 +53,26 @@ section.webgame {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+/* Lotto  */
+.ball {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+  text-align: center;
+  margin-right: 20px;
+}
+
+/* RSP */
+#RSP__computer {
+  width: 142px;
+  height: 200px;
+  justify-self: center;
 }
 
 /* Tic-Tac-Toe */
@@ -103,4 +127,6 @@ section.webgame {
 
 .pairing__card--back {
   transform: rotateY(180deg);
+  font-size: 1.5rem;
+  line-height: 100px;
 }
