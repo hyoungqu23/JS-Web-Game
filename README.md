@@ -478,3 +478,40 @@ document.querySelectorAll(".pairing__card").forEach((card, index) => {
 ### event Bubbling
 
 카드에 직접 eventListener를 각각 추가하는 것보다 event Bubbling을 활용하는 것이 더 좋을 수도 있다. 하지만, 이 경우 `pairingcard__wrapper`에 eventListener를 추가하게 되면, 카드와 카드 사이 여백을 클릭해도 event가 발생하기 때문에, 각각 추가하는 방법이 더 낫다.
+
+### eventListener callback 함수의 `this`
+
+`this`는 원래 `window`를 의미하나, eventListener callback 함수의 `this`는 해당 eventListener가 추가된 태그를 의미한다.
+
+### querySelector의 연속 사용
+
+querySelector는 연달아 사용해서 자식 태그를 검색할 수 있다.
+
+```js
+document.querySelector('head');
+
+document.querySelector('head').querySelector('title');
+document.querySelector('head title');
+
+< <head>...</head>
+< <title>Web game</title>
+< <title>Web game</title>
+```
+
+### `concat` method
+
+```js
+correctCards.push(clicked[0]);
+correctCards.push(clicked[1]);
+clicked = [];
+```
+
+이처럼 짝이 맞는 카드를 뒤집은 경우에 새로운 배열에 추가하고, 기존 배열을 초기화하는 작업을 배열의 `concat` method를 활용해, 더 간결하게 작성할 수 있다.
+
+```js
+correctCards = correctCards.concat(clicked);
+```
+
+### 참고
+성능은 알고리즘 문제와 실제로 사용자들이 사용하는 경우에 중요한데, 다른 것은 고려하지 않아도 되나 반복문을 중복해서 사용하는 경우에는 성능을 반드시 고려해야 한다.
+

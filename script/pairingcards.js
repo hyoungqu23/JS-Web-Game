@@ -6,7 +6,7 @@ const numbers = Array(10).fill().map((element, index) => index + 1);
 
 let numbersCopy = numbers.concat(numbers);  // 2 pair cards(1 ~ 10): 새로운 배열로 생성.
 let shuffled = [];
-let clickable;
+let isClickable;
 
 // Fisher-Yates Shuffle
 function cardShuffle() {
@@ -38,12 +38,46 @@ function createCard(i) {
   return card;
 }
 
+let clicked = [];
+let correctCards = [];
+
 function onClickCard() {
-  
+  this.classList.toggle('flipped'); // addEventListener 내부에서 this는 event.target과 동일.
+  clicked.push(this);
+  // 2장의 card를 뒤집었는가?
+  if (clicked.length !== 2) {
+    return;
+  }
+
+  // 2장의 card가 동일한가?
+  const firstCardNumber = clicked[0].querySelector('.pairing__card--back').textContent
+  const secondCardNumber = clicked[1].querySelector('.pairing__card--back').textContent
+  if (firstCardNumber === secondCardNumber) {
+    // correctCards = correctCards.concat(clicked);
+    correctCards.push(clicked[0]);
+    correctCards.push(clicked[1]);
+    clicked[0].removeEventListener('click', onClickCard);
+    clicked[1].removeEventListener('click', onClickCard);
+    clicked = [];
+
+    // 모두 완료되었는가?
+    if (correctCards.length !== total) {
+      return
+    }
+    setTimeout(() => {
+      alert('Victory!');
+    }, 1000);
+    return;
+  } 
+  setTimeout(() => {
+    clicked[0].classList.remove('flipped');
+    clicked[1].classList.remove('flipped');
+    clicked = [];
+  }, 1000);
 }
 
 function startGame() {
-  clickable = false;
+  isClickable = false;
 
   // cards 생성하기
   cardShuffle();

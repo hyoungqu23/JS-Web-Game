@@ -115,6 +115,7 @@ section.webgame {
 
 .pairing__card--front {
   background: #00019E;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .pairing__card--front, .pairing__card--back {
@@ -126,6 +127,7 @@ section.webgame {
 }
 
 .pairing__card--back {
+  background: #ffffff;
   transform: rotateY(180deg);
   font-size: 1.5rem;
   line-height: 100px;
