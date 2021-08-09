@@ -4,7 +4,7 @@
 
 ## 000. FlowChart
 
-<img scr='../img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
+<img src='../img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
 
 ## 001. Rules
 
@@ -406,3 +406,19 @@ class B extends A {}
    자식 클래스의 `constructor`에서는 `super()` 함수를 통해 부모 클래스에 접근할 수 있고, 부모 클래스의 생성자에 인수를 전달할 수 있다. 만약 공통되지 않은 속성이 있는 경우에는 자식 클래스에 따로 선언하면 된다.
 
    자식 클래스의 method에서도 `super.methodName()`를 호출하여 부모 클래스의 method를 호출할 수 있다.
+
+## Chapter 11. Pairing Card game
+
+## 000. FlowChart
+
+<img src='../img/flowChart/FlowChart_PairingCard' alt='FlowChart'>
+
+## 001. Rules
+
+#### Javascript 필수 문법: 이벤트 루프, 실행 컨텍스트, 프로미스
+
+1. 카드 전체를 보여준다.
+2. 카드 전체를 뒷면으로 뒤집는다.
+3. user가 선택한 카드 2장을 차례로 앞면으로 뒤집는다.
+4. 카드 2장이 일치하면 유지, 불일치하면 다시 뒷면으로 뒤집는다.
+5. 전부 맞춘 경우 게임 진행 시간과 승리 메시지를 보여준다.

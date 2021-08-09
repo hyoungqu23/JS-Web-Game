@@ -58,3 +58,42 @@ section.webgame {
   border: 1px solid;
   text-align: center;
 }
+
+/* Pairing Card */
+.pairing__card {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  width: 70px;
+  height: 100px;
+  perspective: 140px;
+}
+
+.pairing__card--inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform .8s;
+  transform-style: preserve-3d;
+}
+
+.pairing__card.flipped .pairing__card--inner {
+  transform: rotateY(180deg);
+}
+
+.pairing__card--front {
+  background: #00019E;
+}
+
+.pairing__card--front, .pairing__card--back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000000;
+  backface-visibility: hidden;
+}
+
+.pairing__card--back {
+  transform: rotateY(180deg);
+}
