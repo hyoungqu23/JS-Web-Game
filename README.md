@@ -4,7 +4,7 @@
 
 ## 000. FlowChart
 
-<img src='./img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
+<img src='./img/flowChart/FlowChart_TextRPG.png' alt='FlowChart'>
 
 ## 001. Rules
 
@@ -545,29 +545,29 @@ if (!isClickable || correctCards.includes(this) || clicked[0] === this) {
 
 이 bug는 Call Stack과 Event Loop와 관련되어 있다.
 
-### 호출 스택(Call Stack) && Event Loop
+## 007. 호출 스택(Call Stack) && Event Loop
 
 click event는 비동기 event이다. 내부에 비동기 함수인 `setTimeout()` 함수가 존재하기 때문에 코드의 실행 순서를 파악하기 어렵다. 이를 명확하게 파악하려면 호출 스택(Call Stack)과 Event Loop에 대해 알고 있어야 한다.
 
 우선 호출 스택(Call Stack)은 동기 코드를 담당하고, Event Loop는 비동기 코드를 담당하고 있고, 추가적으로 비동기 코드 실행에는 background, task queue 개념이 필요하다.
 
-#### 호출 스택(Call Stack)
+### 호출 스택(Call Stack)
 
 호출 스택(Call Stack)은 **여러 함수**들이 실행되는 공간을 의미한다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기고, 호출 스택(Call Stack)으로 이동한 함수는 실행된다. 실행이 완료된 함수는 호출 스택(Call Stack)에서 빠져 나가고, 호출 스택(Call Stack)이 비어있기 때문에 다시 task queue의 다음 함수를 호출 스택(Call Stack)으로 옮긴다.
 
-#### Event Loop
+### Event Loop
 
 Event Loop는 호출 스택(Call Stack)이 비어있는 경우 task queue에서 function을 꺼내 실행해주는 역할을 한다. 즉, task queue에 대기하는 Function을 호출 스택(Call Stack)으로 이동시킨다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기는 역할을 Event Loop가 맡고 있다.
 
-#### background
+### background
 
 background는 **Timer, EventListener** 등이 존재하는 공간을 의미한다. setTimeout() 함수가 실행되면, background에서 시간을 재고, 시간이 되면 setTimeout() 함수의 callback Function을 task queue로 보낸다. 즉, background에서 코드를 실행하는 것이 아니라, 실행될 callback Function이 task queue로 들어간다.
 
-#### task queue
+### task queue
 
 taks queue는 Timer, EventListener 등의 **callback Function**이 존재하는 공간을 의미한다. 즉, 실행되어야 할 callback Function이 대기하는 공간이다. queue의 특성 상 먼저 들어온 함수부터 실행된다. 다만, task queue도 함수를 직접 실행하지는 않고, 모든 함수는 호출 스택(Call Stack)으로 들어가서 호출/실행된다.
 
-#### 코드 분석하기
+### 코드 분석하기
 
 변수, 함수의 선언은 호출 스택(Call Stack)과 Event Loop에 영향을 주지 않는다. 따라서, 해당 코드에서 처음으로 함수가 호출되는 순간은 `startGame()`이다.
 
@@ -603,7 +603,7 @@ setTimeout은 한 번만 실행되기 때문에 백그라운드(Background)에 �
 
 이후 모든 Timer의 callback Function이 동일한 과정을 거쳐 호출 스택에서 빠져나가면, 호출 스택과 태스크 큐 모두 비어있게 된다. 이 상태가 순서도에서 표시한 '대기' 상태가 된다.
 
-#### bug #5 분석하기
+### bug #5 분석하기
 
 백그라운드(background)에서 대기하고 있는 Card Click Event를 서로 다른 4장의 card를 연달아 click한 경우에서 2, 5, 8, 9번 card를 click했다고 가정하자.
 
@@ -619,7 +619,7 @@ click event가 4회 발생했으므로, 백그라운드에서 해당 click event
 
 따라서, `clicked[0]`, `clicked[1]`의 `className`을 제거해 뒤집을 수 있지만, 이후 `clicked = []`를 통해 초기화하므로, `clicked[3]`, `clicked[4]`에 있는 card #8, card #9를 뒤집을 수가 없다.
 
-결국 이 bug를 해결하기 위해서는 flag 변수를 card가 2장이 click된 경우 세 번째 card는 click이 불가능하게 만들면 된다.
+결국 이 bug를 해결하기 위해서는 clicked 배열에 2장의 card가 들어간 이후로 flag 변수를 `false`로 변경해 세 번째 card는 click이 불가능하게 만들면 된다.
 
 <img src='./img/Ref_#1.png'>
 <img src='./img/Ref_#2.png'>
@@ -636,10 +636,66 @@ click event가 4회 발생했으므로, 백그라운드에서 해당 click event
 <img src='./img/Ref_#13.png'>
 <img src='./img/Ref_#14.png'>
 
-#### 참고
+### 참고
 
 - setTimeout이 정확하지 않은 경우
   호출 스택에 이전에 들어있는 함수가 오래 걸리는 함수여서 Timer가 지정된 시간이 지났는데도 불구하고, 해당 Timer의 callback Function이 태스크 큐에서 호출 스택으로 넘어가지 못해 실행이 늦어지는 것.
 
 - 유의사항
   설계할 때는 순서도를 작성하는 것이 중요하고, 코드를 작성할 때는 scope에 유의해야 한다. 이후 코드를 검증할 때 호출 스택, 이벤트 루프를 파악해야 한다.
+
+### Example Case
+
+```js
+function aaa() {
+  setTimeout(() => {
+    console.log("d");
+  }, 0);
+  console.log("c");
+}
+
+setTimeout(() => {
+  console.log("a");
+  aaa();
+}, 0);
+
+setTimeout(() => {
+  aaa();
+  console.log("b");
+}, 0);
+
+a;
+c;
+c;
+b;
+d;
+d;
+```
+
+#### Call Stack
+
+#1 anonymous -> #2 setTimeout(1) -> #4 ~~setTimeout(1)~~ -> #5 setTimeout(2) -> #7 ~~setTimeout(2)~~ -> #8 ~~anonymous~~
+#13 0s Timer(1) -> #16 aaa -> #17 setTimeout(3) -> #18 console.log(c) ->
+
+#### background
+
+#3 0s Timer(1) -> #6 0s Timer(2) -> #10 ~~0s Timer(1)~~ -> #12 ~~0s Timer(2)~~ -> #18 0s Timer(3)
+
+#### Task Queue
+
+#9 0s Timer(1) -> #11 0s Timer(2) -> #14 ~~0s Timer(1)~~ ->
+
+#### Console
+
+#15 a -> c -> c -> b -> d -> d
+
+www.latentflip.com/loupe
+
+## 008. 마무리
+
+1. 호출 스택(Call Stack)
+   동기 함수만 있을 때는 호출 스택만 고려하면 된다. 함수가 호출될 때, 호출 스택에 들어가 실행이 되고, 실행이 끝나면 호출 스택에서 빠져나간다. 기존 함수의 실행이 완료되지 않았는데, 다른 함수가 호출되면 새로 호출된 함수는 기존 함수 위에 쌓이게 된다.
+   처음 파일을 실행할 때 anonymous라는 익명함수가 실행된다.(Google Chrome)
+
+2. 이벤트 루프(Event Loop)
+   비동기 함수가 실행될 때는 호출 스택뿐만 아니라, 이벤트 루프까지 동원해 실행 순서를 파악해야 한다. Timer, EventListener 같은 비동기 함수는 callback Function을 백그라운드에서 태스크 큐로 보낸다. 이벤트 루프는 호출 스택이 비어 있는 경우에 태스크 큐에서 하나씩 함수를 꺼내 호출 스택으로 보내 실행한다. 즉, 호출 스택이 비어 있지 않은 경우면, 태스크 큐에 있는 함수는 실행되지 않는다.

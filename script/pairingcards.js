@@ -1,12 +1,15 @@
 const $pairingcardWrapper = document.querySelector('#pairingcard__wrapper');
+const $pairingcardInput = document.querySelector('#pairingcard__input');
 
 // card number shuffling
-const total = 20;
+const total = Numbers($pairingcardInput.value);
 const numbers = Array(10).fill().map((element, index) => index + 1);
 
-let numbersCopy = numbers.concat(numbers);  // 2 pair cards(1 ~ 10): 새로운 배열로 생성.
+let numbersSlice = numbers.slice(0, total / 2);
+let numbersCopy = numbersSlice.concat(numbersSlice);  // 2 pair cards(1 ~ 10): 새로운 배열로 생성.
 let shuffled = [];
 let isClickable = false;
+let startTime;
 
 // Fisher-Yates Shuffle
 function cardShuffle() {
@@ -67,16 +70,19 @@ function onClickCard() {
     if (correctCards.length !== total) {
       return
     }
+    const endTime = new Date();
     setTimeout(() => {
-      alert('Victory!');
+      alert(`Victory! you spend ${(endTime - startTime) / 1000}`);
       resetGame();
     }, 1000);
     return;
-  } 
+  }
+  isClickable = false;
   setTimeout(() => {
     clicked[0].classList.remove('flipped');
     clicked[1].classList.remove('flipped');
     clicked = [];
+    isClickable = true;
   }, 1000);
 }
 
@@ -105,9 +111,8 @@ function startGame() {
       card.classList.remove('flipped');
     });
     isClickable = true;
+    startTime = new Date();
   }, 5000);
-
-  let startTime = new Date();
 }
 
 startGame();
