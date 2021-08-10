@@ -6,7 +6,7 @@ const numbers = Array(10).fill().map((element, index) => index + 1);
 
 let numbersCopy = numbers.concat(numbers);  // 2 pair cards(1 ~ 10): 새로운 배열로 생성.
 let shuffled = [];
-let isClickable;
+let isClickable = false;
 
 // Fisher-Yates Shuffle
 function cardShuffle() {
@@ -42,6 +42,9 @@ let clicked = [];
 let correctCards = [];
 
 function onClickCard() {
+  if (!isClickable || correctCards.includes(this) || clicked[0] === this) {
+    return;
+  }
   this.classList.toggle('flipped'); // addEventListener 내부에서 this는 event.target과 동일.
   clicked.push(this);
   // 2장의 card를 뒤집었는가?
@@ -66,6 +69,7 @@ function onClickCard() {
     }
     setTimeout(() => {
       alert('Victory!');
+      resetGame();
     }, 1000);
     return;
   } 
@@ -100,9 +104,19 @@ function startGame() {
     document.querySelectorAll('.pairing__card').forEach((card) => {
       card.classList.remove('flipped');
     });
+    isClickable = true;
   }, 5000);
 
   let startTime = new Date();
 }
 
 startGame();
+
+function resetGame() {
+  $pairingcardWrapper.innerHTML = '';
+  isClickable = false;
+  numbersCopy = numbers.concat(numbers);
+  shuffled = [];
+  correctCards = [];
+  startGame();
+}
