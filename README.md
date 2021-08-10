@@ -699,3 +699,18 @@ www.latentflip.com/loupe
 
 2. 이벤트 루프(Event Loop)
    비동기 함수가 실행될 때는 호출 스택뿐만 아니라, 이벤트 루프까지 동원해 실행 순서를 파악해야 한다. Timer, EventListener 같은 비동기 함수는 callback Function을 백그라운드에서 태스크 큐로 보낸다. 이벤트 루프는 호출 스택이 비어 있는 경우에 태스크 큐에서 하나씩 함수를 꺼내 호출 스택으로 보내 실행한다. 즉, 호출 스택이 비어 있지 않은 경우면, 태스크 큐에 있는 함수는 실행되지 않는다.
+
+## Chapter 12. mine-sweeper
+
+## 000. FlowChart
+
+<img src='./img/flowChart/FlowChart_minesweeper.png' alt='FlowChart'>
+
+## 001. Rules
+
+1. 테이블 모양의 칸을 만들기
+2. 지뢰를 무작위로 배치하기
+3. 칸 클릭 시 주변 지뢰 개수 표시하기
+4. 주변 지뢰 개수가 0이라면 한 번에 모든 칸을 여는 작업 설정하기
+5. 마우스 우클릭 시 물음표, 깃발 표시하기
+
