@@ -4,7 +4,7 @@
 
 ## 000. FlowChart
 
-<img src='../img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
+<img src='./img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
 
 ## 001. Rules
 
@@ -406,7 +406,7 @@ class B extends A {}
 
 ## 000. FlowChart
 
-<img src='../img/flowChart/FlowChart_PairingCard.png' alt='FlowChart'>
+<img src='./img/flowChart/FlowChart_PairingCard.png' alt='FlowChart'>
 
 ## 001. Rules
 
@@ -529,11 +529,11 @@ correctCards = correctCards.concat(clicked);
 3. 짝이 맞아 뒤집은 card를 click하는 것이 불가능해야 하는데, click하면 뒤집히는 bug
 4. 한 card를 두번 연달아 click시 더 이상 해당 card click 불가능해지거나 게임이 완료된다는 메시지가 열리는 bug
 
-   2번에서 4번까지는 click이 되지 않아야 하는 순간에 click이 되는 bug이다. 따라서 click이 가능해야 하는 상황과 불가능해야 하는 상황을 구분해야 하므로, `isClickable` flag 변수를 활용해야 한다.
+2번에서 4번까지는 click이 되지 않아야 하는 순간에 click이 되는 bug이다. 따라서 click이 가능해야 하는 상황과 불가능해야 하는 상황을 구분해야 하므로, `isClickable` flag 변수를 활용해야 한다.
 
-   기본적으로 `false` 값을 가지고, click을 허용해야 하는 경우에만 `true` 값으로 변경해주면 된다.
+기본적으로 `false` 값을 가지고, click을 허용해야 하는 경우에만 `true` 값으로 변경해주면 된다.
 
-   즉, flag 변수가 `false`이거나, 이미 click 한 후 짝이 맞아 뒤집은 card이거나, 방금 click한 card를 연달아 click하는 것을 방지한다.
+즉, flag 변수가 `false`이거나, 이미 click 한 후 짝이 맞아 뒤집은 card이거나, 방금 click한 card를 연달아 click하는 것을 방지한다.
 
 ```js
 if (!isClickable || correctCards.includes(this) || clicked[0] === this) {
@@ -543,98 +543,98 @@ if (!isClickable || correctCards.includes(this) || clicked[0] === this) {
 
 5. 서로 다른 네 가지 색의 card를 연달아 click하면, 마지막 두 card가 남아 있는 bug
 
-   이 bug는 Call Stack과 Event Loop와 관련되어 있다.
+이 bug는 Call Stack과 Event Loop와 관련되어 있다.
 
 ### 호출 스택(Call Stack) && Event Loop
 
-    click event는 비동기 event이다. 내부에 비동기 함수인 `setTimeout()` 함수가 존재하기 때문에 코드의 실행 순서를 파악하기 어렵다. 이를 명확하게 파악하려면 호출 스택(Call Stack)과 Event Loop에 대해 알고 있어야 한다.
+click event는 비동기 event이다. 내부에 비동기 함수인 `setTimeout()` 함수가 존재하기 때문에 코드의 실행 순서를 파악하기 어렵다. 이를 명확하게 파악하려면 호출 스택(Call Stack)과 Event Loop에 대해 알고 있어야 한다.
 
-    우선 호출 스택(Call Stack)은 동기 코드를 담당하고, Event Loop는 비동기 코드를 담당하고 있고, 추가적으로 비동기 코드 실행에는 background, task queue 개념이 필요하다.
+우선 호출 스택(Call Stack)은 동기 코드를 담당하고, Event Loop는 비동기 코드를 담당하고 있고, 추가적으로 비동기 코드 실행에는 background, task queue 개념이 필요하다.
 
 #### 호출 스택(Call Stack)
 
-     호출 스택(Call Stack)은 **여러 함수**들이 실행되는 공간을 의미한다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기고, 호출 스택(Call Stack)으로 이동한 함수는 실행된다. 실행이 완료된 함수는 호출 스택(Call Stack)에서 빠져 나가고, 호출 스택(Call Stack)이 비어있기 때문에 다시 task queue의 다음 함수를 호출 스택(Call Stack)으로 옮긴다.
+호출 스택(Call Stack)은 **여러 함수**들이 실행되는 공간을 의미한다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기고, 호출 스택(Call Stack)으로 이동한 함수는 실행된다. 실행이 완료된 함수는 호출 스택(Call Stack)에서 빠져 나가고, 호출 스택(Call Stack)이 비어있기 때문에 다시 task queue의 다음 함수를 호출 스택(Call Stack)으로 옮긴다.
 
 #### Event Loop
 
-     Event Loop는 호출 스택(Call Stack)이 비어있는 경우 task queue에서 function을 꺼내 실행해주는 역할을 한다. 즉, task queue에 대기하는 Function을 호출 스택(Call Stack)으로 이동시킨다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기는 역할을 Event Loop가 맡고 있다.
+Event Loop는 호출 스택(Call Stack)이 비어있는 경우 task queue에서 function을 꺼내 실행해주는 역할을 한다. 즉, task queue에 대기하는 Function을 호출 스택(Call Stack)으로 이동시킨다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기는 역할을 Event Loop가 맡고 있다.
 
 #### background
 
-     background는 **Timer, EventListener** 등이 존재하는 공간을 의미한다. setTimeout() 함수가 실행되면, background에서 시간을 재고, 시간이 되면 setTimeout() 함수의 callback Function을 task queue로 보낸다. 즉, background에서 코드를 실행하는 것이 아니라, 실행될 callback Function이 task queue로 들어간다.
+background는 **Timer, EventListener** 등이 존재하는 공간을 의미한다. setTimeout() 함수가 실행되면, background에서 시간을 재고, 시간이 되면 setTimeout() 함수의 callback Function을 task queue로 보낸다. 즉, background에서 코드를 실행하는 것이 아니라, 실행될 callback Function이 task queue로 들어간다.
 
 #### task queue
 
-     taks queue는 Timer, EventListener 등의 **callback Function**이 존재하는 공간을 의미한다. 즉, 실행되어야 할 callback Function이 대기하는 공간이다. queue의 특성 상 먼저 들어온 함수부터 실행된다. 다만, task queue도 함수를 직접 실행하지는 않고, 모든 함수는 호출 스택(Call Stack)으로 들어가서 호출/실행된다.
+taks queue는 Timer, EventListener 등의 **callback Function**이 존재하는 공간을 의미한다. 즉, 실행되어야 할 callback Function이 대기하는 공간이다. queue의 특성 상 먼저 들어온 함수부터 실행된다. 다만, task queue도 함수를 직접 실행하지는 않고, 모든 함수는 호출 스택(Call Stack)으로 들어가서 호출/실행된다.
 
 #### 코드 분석하기
 
-     변수, 함수의 선언은 호출 스택(Call Stack)과 Event Loop에 영향을 주지 않는다. 따라서, 해당 코드에서 처음으로 함수가 호출되는 순간은 `startGame()`이다.
+변수, 함수의 선언은 호출 스택(Call Stack)과 Event Loop에 영향을 주지 않는다. 따라서, 해당 코드에서 처음으로 함수가 호출되는 순간은 `startGame()`이다.
 
-     이때, 함수가 처음으로 실행되는 순간에 브라우저에서는 하나의 함수가 실행되는데, 이를 Google Chrome에서는 `anonymous` 함수로 표시한다.
+이때, 함수가 처음으로 실행되는 순간에 브라우저에서는 하나의 함수가 실행되는데, 이를 Google Chrome에서는 `anonymous` 함수로 표시한다.
 
-     ```js
-     function a() {
-       b();
-     }
-     function b() {
-       console.trace();
-     }
+```js
+function a() {
+  b();
+}
+function b() {
+  console.trace();
+}
 
-     a();
+a();
 
-     < console.trace
-       b             @ VM109:5
-       a             @ VM109:2
-       (anonymous)   @ VM109:8
-     ```
+< console.trace
+  b             @ VM109:5
+  a             @ VM109:2
+  (anonymous)   @ VM109:8
+```
 
-     즉, `function anonymous()` 내부에 `function a()`, `function b()`를 선언하기 때문에, 사실상 어떤 javascript 코드를 실행하는 것은 `function anonymous()` 함수를 실행하는 것과 동일하다.
+즉, `function anonymous()` 내부에 `function a()`, `function b()`를 선언하기 때문에, 사실상 어떤 javascript 코드를 실행하는 것은 `function anonymous()` 함수를 실행하는 것과 동일하다.
 
-     호출 스택(Call Stack)을 확인할 수 있는 method인 `console.trace()`를 통해 함수의 종료 순서를 확인해보면, `function anonymous()`가 가장 먼저 실행되고, 이후에 `function a()`, 마지막으로 `function b()`가 실행된 이후에 종료되고, 다시 `function a()`가 종료된 후 마지막으로 `function anonymous()`가 종료다는 것을 알 수 있다.
+호출 스택(Call Stack)을 확인할 수 있는 method인 `console.trace()`를 통해 함수의 종료 순서를 확인해보면, `function anonymous()`가 가장 먼저 실행되고, 이후에 `function a()`, 마지막으로 `function b()`가 실행된 이후에 종료되고, 다시 `function a()`가 종료된 후 마지막으로 `function anonymous()`가 종료다는 것을 알 수 있다.
 
-     함수의 선언과 호출을 제대로 구분해야 하며, 해당 함수가 종료된 것은 함수 선언의 {}가 끝나는 부분에서 함수가 종료된 것임을 알 수 있다.
+함수의 선언과 호출을 제대로 구분해야 하며, 해당 함수가 종료된 것은 함수 선언의 {}가 끝나는 부분에서 함수가 종료된 것임을 알 수 있다.
 
-     일반적으로 호출 스택(Call Stack)의 함수가 모두 종료되어 비어있으면 Javascript가 종료된다고 하지만, 백그라운드(Background), 태스크 큐(Task Queue)에 비동기 함수가 존재하는 경우에는 종료되지 않는다.
+일반적으로 호출 스택(Call Stack)의 함수가 모두 종료되어 비어있으면 Javascript가 종료된다고 하지만, 백그라운드(Background), 태스크 큐(Task Queue)에 비동기 함수가 존재하는 경우에는 종료되지 않는다.
 
-     setTimeout은 한 번만 실행되기 때문에 백그라운드(Background)에 등록되었다가, 해당 Timer의 callback Function이 태스크 큐(Task Queue)로 이동하면, 백그라운드(Background)에서 삭제된다.
+setTimeout은 한 번만 실행되기 때문에 백그라운드(Background)에 등록되었다가, 해당 Timer의 callback Function이 태스크 큐(Task Queue)로 이동하면, 백그라운드(Background)에서 삭제된다.
 
-     이벤트 루프(Event Loop)는 호출 스택(Call Stack)이 비어 있으면, 태스크 큐(Task Queue)에서 하나씩 함수를 끌어 올린다. 따라서, 1초 Timer의 callback Function이 호출 스택(Call Stack)으로 올라가면서, 해당 함수를 실행하고, 종료되면 호출 스택(Call Stack)에서 빠져나간다.
+이벤트 루프(Event Loop)는 호출 스택(Call Stack)이 비어 있으면, 태스크 큐(Task Queue)에서 하나씩 함수를 끌어 올린다. 따라서, 1초 Timer의 callback Function이 호출 스택(Call Stack)으로 올라가면서, 해당 함수를 실행하고, 종료되면 호출 스택(Call Stack)에서 빠져나간다.
 
-     이후 모든 Timer의 callback Function이 동일한 과정을 거쳐 호출 스택에서 빠져나가면, 호출 스택과 태스크 큐 모두 비어있게 된다. 이 상태가 순서도에서 표시한 '대기' 상태가 된다.
+이후 모든 Timer의 callback Function이 동일한 과정을 거쳐 호출 스택에서 빠져나가면, 호출 스택과 태스크 큐 모두 비어있게 된다. 이 상태가 순서도에서 표시한 '대기' 상태가 된다.
 
 #### bug #5 분석하기
 
-     백그라운드(background)에서 대기하고 있는 Card Click Event를 서로 다른 4장의 card를 연달아 click한 경우에서 2, 5, 8, 9번 card를 click했다고 가정하자.
+백그라운드(background)에서 대기하고 있는 Card Click Event를 서로 다른 4장의 card를 연달아 click한 경우에서 2, 5, 8, 9번 card를 click했다고 가정하자.
 
-     click event가 4회 발생했으므로, 백그라운드에서 해당 click event의 callback Function 4개를 태스크 큐로 보낸다.
+click event가 4회 발생했으므로, 백그라운드에서 해당 click event의 callback Function 4개를 태스크 큐로 보낸다.
 
-     이후 이벤트 루프는 호출 스택이 비어있으므로, 태스크 큐에서 callback Function을 하나씩 불러 실행한다. 우선 card #2의 click callback Function을 실행하고, card #2는 `clicked` 배열에 추가된 후 함수가 종료되어 호출 스택에서 나간다.
+이후 이벤트 루프는 호출 스택이 비어있으므로, 태스크 큐에서 callback Function을 하나씩 불러 실행한다. 우선 card #2의 click callback Function을 실행하고, card #2는 `clicked` 배열에 추가된 후 함수가 종료되어 호출 스택에서 나간다.
 
-     그 다음 card #5를 click한 경우, 해당 callback Function에 따라 `clicked` 배열에 card #5가 추가되어, 해당 배열에 두 개의 card가 존재한다. 이 두 card는 숫자가 다르므로, setTimeout이 실행되고, 0.5초 Timer가 백그라운드에 등록된다.
+그 다음 card #5를 click한 경우, 해당 callback Function에 따라 `clicked` 배열에 card #5가 추가되어, 해당 배열에 두 개의 card가 존재한다. 이 두 card는 숫자가 다르므로, setTimeout이 실행되고, 0.5초 Timer가 백그라운드에 등록된다.
 
-     이 부분에서 bug의 원인을 파악할 수 있다. 즉, 0.5초 Timer의 callback Function이 card #8 callback Function보다 늦게 태스크 큐에 들어오기 때문에 선입 선출의 원칙에 따라 0.5초 Timer의 callback Function이 더 늦게 실행된다.
+이 부분에서 bug의 원인을 파악할 수 있다. 즉, 0.5초 Timer의 callback Function이 card #8 callback Function보다 늦게 태스크 큐에 들어오기 때문에 선입 선출의 원칙에 따라 0.5초 Timer의 callback Function이 더 늦게 실행된다.
 
-     즉, 동기적인 코드를 먼저 호출하여 `clicked = [2, 5, 8, 9]`가 된 후 비동기 callback Function인 `setTimeout`이 호출되기에 bug가 발생하는 것이다.
+즉, 동기적인 코드를 먼저 호출하여 `clicked = [2, 5, 8, 9]`가 된 후 비동기 callback Function인 `setTimeout`이 호출되기에 bug가 발생하는 것이다.
 
-     따라서, `clicked[0]`, `clicked[1]`의 `className`을 제거해 뒤집을 수 있지만, 이후 `clicked = []`를 통해 초기화하므로, `clicked[3]`, `clicked[4]`에 있는 card #8, card #9를 뒤집을 수가 없다.
+따라서, `clicked[0]`, `clicked[1]`의 `className`을 제거해 뒤집을 수 있지만, 이후 `clicked = []`를 통해 초기화하므로, `clicked[3]`, `clicked[4]`에 있는 card #8, card #9를 뒤집을 수가 없다.
 
-     결국 이 bug를 해결하기 위해서는 flag 변수를 card가 2장이 click된 경우 세 번째 card는 click이 불가능하게 만들면 된다.
+결국 이 bug를 해결하기 위해서는 flag 변수를 card가 2장이 click된 경우 세 번째 card는 click이 불가능하게 만들면 된다.
 
-<img src='../img/Ref_#1.png'>
-<img src='../img/Ref_#2.png'>
-<img src='../img/Ref_#3.png'>
-<img src='../img/Ref_#4.png'>
-<img src='../img/Ref_#5.png'>
-<img src='../img/Ref_#6.png'>
-<img src='../img/Ref_#7.png'>
-<img src='../img/Ref_#8.png'>
-<img src='../img/Ref_#9.png'>
-<img src='../img/Ref_#10.png'>
-<img src='../img/Ref_#11.png'>
-<img src='../img/Ref_#12.png'>
-<img src='../img/Ref_#13.png'>
-<img src='../img/Ref_#14.png'>
+<img src='./img/Ref_#1.png'>
+<img src='./img/Ref_#2.png'>
+<img src='./img/Ref_#3.png'>
+<img src='./img/Ref_#4.png'>
+<img src='./img/Ref_#5.png'>
+<img src='./img/Ref_#6.png'>
+<img src='./img/Ref_#7.png'>
+<img src='./img/Ref_#8.png'>
+<img src='./img/Ref_#9.png'>
+<img src='./img/Ref_#10.png'>
+<img src='./img/Ref_#11.png'>
+<img src='./img/Ref_#12.png'>
+<img src='./img/Ref_#13.png'>
+<img src='./img/Ref_#14.png'>
 
 #### 참고
 
