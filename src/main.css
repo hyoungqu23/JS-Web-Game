@@ -143,3 +143,29 @@ section.webgame {
   font-size: 1.5rem;
   line-height: 100px;
 }
+
+/* Mine Sweeper */
+#minesweeper__table {
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid rgb(187, 187, 187);
+  text-align: center;
+  line-height: 2px;
+  width: 20px;
+  height: 20px;
+  background: rgb(136, 136, 136);
+}
+
+td.opened {
+  background: rgb(255, 255, 255);
+}
+
+td.flag {
+  background: rgb(255, 0, 0);
+}
+
+td.question {
+  background: rgb(255, 165, 0);
+}
