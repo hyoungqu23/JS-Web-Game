@@ -1,5 +1,1280 @@
 # JS-Web-Game
 
+## Chapter 03. Word-relay
+
+### 000. FlowChart
+
+![FlowChart_word-relay](./img/flowchart/FlowChart_word-relay.png)
+
+---
+
+### 001. Rules
+
+1. 참가자의 수를 결정한다.
+2. 첫 번째 순서인 사람이 3글자 단어를 입력한다.
+3. 다음 순서인 사람이 이전 순서의 사람이 입력한 단어의 마지막 글자와 동일한 글자로 시작하는 3글자 단어를 입력한다.
+4. 계속 이어간다.
+
+---
+
+### 002. 대화 상자의 이해
+
+1. `window.prompt()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Window/prompt)
+
+   > `window.prompt(|message|, |default|);`
+
+   사용자가 텍스트를 입력할 수 있도록 안내하는 선택적 메세지를 갖고 있는 대화 상자를 띄우는 method이다. 사용자가 입력한 텍스트는 문자열이므로, 숫자로 활용하기 위해서는 `parseInt()` 함수나 `Number()` 함수로 형 변환해야 한다. '취소'를 누르는 경우 `null`이 반환되고, 해당 입력 값을 활용하려면 변수에 저장해야 한다.
+
+   - `parseInt(string, |radix|)` 함수는 문자열 인자를 특정 진수의 정수를 반환하는 함수이다. 2번째 인수인 `radix` 값이 2 미만, 36 초과인 경우 `NaN`을 반환한다.
+
+   - `Number`는 숫자 값으로 작업할 수 있게 해주는 Wrapper 객체이다. 생성자 함수 `Number()`를 사용해서 만들 수 있다. 다만, 생성자로서 사용하지 않으면(`new` 연산자를 사용하지 않으면) `Number()`를 사용하여 형 변환을 할 수 있다. 이때 만약 인수를 숫자로 변환할 수 없으면 `NaN`을 반환한다.
+
+   ```js
+   const number = parseInt(prompt("How many person participate?"), 10);
+   ```
+
+2. `window.alert()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)
+
+   > `alert(|message|);`
+
+   확인 버튼을 가지며 메시지를 지정할 수 있는 경고 대화 상자를 띄우는 method이다. 즉, 경고 대화 상자를 통해 사용자에게 어떤 메시지를 알릴 때 사용한다.
+   참고로, `alert()`의 `return` 값은 `undefined`이므로, `false`이다.
+
+   ```js
+   alert(number);
+   ```
+
+3. `window.confirm()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Window/confirm)
+
+   > `window.confirm(message);`
+
+   확인과 취소 두 버튼을 가지며 메시지를 지정할 수 있는 모달 대화 상자를 띄우는 method로, 사용자의 의사를 물어보고, yes, no를 입력받는다. '확인'을 누르면 `true`, '취소'를 누르면 `false` 값을 반환한다.
+
+   ```js
+   const yesOrNO = confirm(number, "is right?");
+   ```
+
+---
+
+### 003. HTML Element 선택하기
+
+HTML Element를 선택해 저장하는 변수의 이름은 `$tagName`으로 통일하는 것을 기본으로 한다.
+
+1. `document.querySelector()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Document/querySelector)
+
+   > `document.querySelector(selectors)`
+
+   해당 method는 `selectors`와 일치하는 HTML 문서 내 첫 번째 Element를 반환하고, 일치하는 요소가 없으면 `null`을 반환한다.
+
+   ```js
+   const $input = document.querySelector("input");
+   ```
+
+2. `document.querySelectorAll()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Document/querySelectorAll)
+
+   > `document.querySelectorAll(selectors)`
+
+   해당 method는 `selectors`와 일치하는 HTML 문서 내 Element의 목록을 나타내는 *NodeList*를 반환하고, 일치하는 요소가 없으면 비어있는 NodeList를 반환한다.
+
+   - 이때 _NodeList_([mdn](https://developer.mozilla.org/ko/docs/Web/API/NodeList))는 유사 배열로, 0과 length를 속성 이름으로 가진 객체이다. 다만, 배열의 method, properties를 사용하지 못하는 경우도 있다.
+
+   ```js
+   const $button = document.querySelectorAll("button");
+   ```
+
+3. `selectors` [mdn](https://developer.mozilla.org/ko/docs/Web/API/Document_Object_Model/Locating_DOM_elements_using_selectors)
+   `selectors`는 기본적으로 `#`은 id, `.`은 class, ` `는 자손 tag를 의미한다.
+
+   ```js
+   const $order = document.querySelector("#order");
+   const $word = document.querySelector("#word");
+   const $span = document.querySelector("div span");
+   ```
+
+---
+
+### 004. Event 설정하기
+
+1. `eventTarget.addEventListener()` [mdn](https://developer.mozilla.org/ko/docs/Web/API/EventTarget/addEventListener)
+
+   > `eventTarget.addEventListener(type, listener)`
+
+   `addEventListener()` method는 eventTarget에 지정한 Event(`type`)가 전달될 때마다 호출할 함수(`listener`)를 설정한다.
+
+   - `type`([mdn](https://developer.mozilla.org/ko/docs/Web/Events))은 반응할 Event 유형을 나타내는 것으로, `focus`, `blur`, `reset`, `submit`, `mouseenter`, `click`, `dbclick`, `contextmenu` 등이 있다.
+   - `listener`는 지정된 `type`의 Event가 발생한 경우, 알림(Event 인터페이스를 구현하는 객체)을 받는 객체이다. 이러한 `listener`는 콜백 함수(callback function) 또는 `handleEvent()` method가 콜백 함수(callback function: 특정 동작을 실행된 이후 연이어 추가로 실행되는 함수(ArrowFunction 가능)) 역할을 하는 EventListener를 구현하는 객체로 지정할 수 있다.
+   - 함수 자체(함수 이름만)를 넣어야 하지, `()`를 통해 실행하면 안 된다는 점에 유의해야 한다. 실행하면, `return` 값이 2번째 매개변수로 삽입된다.(`return` 기본 값 = `undefined`)
+
+   ```js
+   $input.addEventListener("input", (event) => {
+     console.log("글자 입력", event.target.value); // 입력 값 확인을 위해서 event 매개변수를 CallbackFunction에 추가하고, event.target.value로 확인 가능.
+   });
+
+   const onClick = function () {
+     console.log("버튼 클릭");
+   };
+   $button.addEventListener("click", onClick);
+   ```
+
+---
+
+### 005. Refactoring
+
+'Refactoring'은 '결과의 변경 없이 코드의 구조를 재조정함'을 뜻한다. 주로 가독성을 높이고 유지보수를 편하게 한다. 즉, 사용자가 보는 외부 화면은 그대로 두면서 내부 논리나 구조를 바꾸고 개선하는 유지보수 행위를 말한다.
+
+1. `||` 구문을 활용한 Refactoring
+
+   - '제시어가 비어 있다.' && '단어가 올바르다.' => '입력한 단어가 제시어가 된다.'
+   - '제시어가 비어 있다.' && '단어가 올바르지 않다.' => '입력한 단어가 제시어가 된다.'
+   - '제시어가 비어 있지 않다.' && '단어가 올바르다.' => '입력한 단어가 제시어가 된다.'
+   - '제시어가 비어 있지 않다.' && '단어가 올바르지 않다.' => '틀렸다고 표시한다.'
+
+   결국, '제시어가 비어있는가?'와 '단어가 올바른가?'를 분기하는 두 if문을 `||`(또는) 으로 합칠 수 있다.
+
+   ```js
+   const onBtnClick = function () {
+     if (!word || word[word.length - 1] === newWord[0]) {
+       // 입력한 단어가 제시어가 된다.
+     } else {
+       // 틀렸다고 표시한다.
+     }
+   };
+   ```
+
+---
+
+### 006. _Notes_
+
+1. Code 작성 시 고려해야할 사항
+
+   - 프로그램 절차의 개수는 정해져 있어야 한다.
+   - 각 절차는 항상 같은 내용이어야 한다.
+   - 모든 가능성을 고려해야 한다.
+   - 예시는 절차를 검증할 때 사용한다.
+   - 사용자의 이벤트(버튼 클릭, 입력창 입력 등)가 필요한 곳에서 순서도를 끊어주어야 한다.
+
+2. 부가적으로 수정하거나 추가할 기능
+   - (2021.07.25) prompt를 사용하지 않고, 참가자 수를 입력받는 방법에 대한 수정 필요.
+
+---
+
+---
+
+## Chapter 04. Calculator
+
+### 000. FlowChart
+
+![FlowChart_calculator](./img/flowchart/FlowChart_calculator.png)
+
+---
+
+### 001. Rules
+
+1. 숫자 btn, 연산자 btn, 숫자 btn 순으로 입력한다.
+2. 연산자는 좌측 상단에, 결과값은 우측 상단에 표시한다.
+3. 음수 입력을 허용한다.
+4. 연속 계산을 허용한다.
+
+---
+
+### 002. 고차 함수(High Order Function) 사용하기
+
+1. 고차 함수(High Order Function)의 정의와 의의
+
+   함수를 호출할 때마다 함수를 반환하는 함수를 고차 함수라고 한다. 이렇게 반환된 함수를 다른 변수에 저장할 수 있고, 그 변수에 저장된 함수를 다시 호출할 수 있다. 또한, 반환하는 값을 변경하기 위해 매개변수(parameter)를 사용할 수 있다.
+
+   - 하나 이상의 함수를 인자로 받거나, 함수를 결과로 반환하는 함수를 고차함수라고 한다.
+
+   - 참고로, 화살표 함수 문법에 따라 함수의 본문에서 바로 반환되는 값이 있으면, {와 return을 생략할 수 있다.
+
+   - 고차 함수(High Order Function)를 사용하면 보다 유연하고 반복을 줄일 수 있는 코드를 작성할 수 있다.
+
+2. 제어 패턴 추상화(Abstracting Patterns of Control)
+
+   - HOF는 단순히 함수의 값을 전달하는 기존 관념을 넘어, 함수의 흐름을 제어하는 파라미터로써 수용한다. 이를 제어 패턴 추상화(Abstracting Patterns of Control)라고 부른다.
+   - 즉, 고차 함수(High Order Function)는 계산의 세부사항을 인자로 넘기는 함수 안에 캡슐화 하여 추상적으로 제공할 수 있도록 한다.
+
+   ```js
+   function repeat(n, fn) {
+     for (let i = 0; i < n; i++) {
+       fn(i);
+     }
+   }
+
+   // 0부터 9999까지 출력하기
+   repeat(10000, console.log);
+
+   // 0부터 9999까지 배열에 담기
+   const list = [];
+   repeat(10000, (i) => {
+     list.push(i);
+   });
+   ```
+
+---
+
+### 003. Refactoring
+
+1. 중복 if 구문 제거하기
+
+   - if문 이후의 공통된 절차를 각 분기점 내부에 넣는다.
+   - 분기점에서 짧은 절차부터 실행할 수 있도록 if 구문을 작성한다.
+   - 짧은 절차가 끝나면 return(함수 내부의 경우), break(for문 내부의 경우)로 중단한다.(이미 존재하는 경우, 넘어간다.)
+   - else를 제거한다.
+   - 반복한다.
+
+2. 단순 중복 함수로 제거하기
+   함수가 거의 유사하다면, 다른 부분을 매개변수로 처리하면 된다.
+
+---
+
+### 004. 추가 기능 구현하기
+
+1. 연속 계산
+   | |1|+|2|+|4|=|
+   |------|-|-|-|-|-|-|
+   |numOne|1|1|1|3|3|
+   |operator||+|+|+|+|
+   |numTwo|||2||4|
+   |result||||||7|
+
+2. 음수 입력
+
+---
+
+### 005. _Notes_
+
+1. Switch <-> if <-> 조건부 삼항 연산자
+
+2. for <-> while
+
+---
+
+---
+
+## Chapter 05. NumberBaseball Game
+
+### 000. FlowChart
+
+![FlowChart_Number-Baseball](./img/flowChart/FlowChart_Number-Baseball.png)
+
+---
+
+### 001. Rules
+
+1. 무작위로 4가지 숫자 선정하기
+2. 0 ~ 9 중 중복되지 않는 4개의 숫자 입력받기
+3. 순서(자리수)와 숫자를 모두 맞추면 1 Strike
+4. 숫자만 맞추면 1 Ball
+5. 숫자와 자리수 모두 틀리면 1 Out
+6. 10회의 기회가 주어지고, 모든 기회를 소진하면 종료하기
+
+---
+
+### 002. `Math.random()`을 활용한 무작위 숫자 선정
+
+`Math.random()`([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random))함수는 0 이상 1 미만의 구간에서 근사적으로 균일한(approximately uniform) 부동소숫점 의사난수를 반환한다.
+
+- 이 값은 사용자가 원하는 범위로 변형할 수 있다. 난수 생성 알고리즘에 사용되는 초기값은 구현체가 선택하며, 사용자가 선택하거나 초기화할 수 없다.
+
+- 암호학적으로 안전한 난수를 제공하지 않으므로, 보안과 관련된 어떤 것에도 이 함수를 사용해서는 안 된다. 그 대신 Web Crypto API의 `window.crypto.getRandomValues()` method를 이용하여야 한다.
+
+- 따라서, 원하는 수를 곱셈과 덧셈을 활용하고, 이를 정수화(floor, ceil, round)해서 사용한다.
+
+```js
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+```
+
+```js
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
+}
+```
+
+---
+
+### 003. HTML `<form>`
+
+#### `<form>`
+
+HTML `<form>` ([mdn](https://developer.mozilla.org/ko/docs/Web/HTML/Element/form)) 은 정보를 제출하기 위한 대화형 컨트롤을 포함하는 문서 구획을 나타낸다. `<form>` 내부에는 `<input>`, `<label>`, `<button>` 등이 존재할 수 있다.
+
+- 이 경우, 직접 `<form>`에 `addEventListener()` method를 사용할 수 있는데, 이때의 Event Type은 `click`이 아닌 `submit`이다.
+
+- 또한, `<form>`은 기본 동작으로 '새로고침'이 설정되어 있으므로, 이를 `event.preventDefault();`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Event/preventDefault))로 종료할 수 있다.
+
+- `<form>` 내부에 존재하는 Element(ex. `<input>`, `<label>`, `<button>` 등) 에 접근하기 위해서 배열처럼 `event.target[0]`, `event.target[1]`, `event.target[2]`로 접근할 수 있다.
+
+```html
+<form action="" method="get" class="form-example">
+  <div class="form-example">
+    <label for="name">Enter your name: </label>
+    <input type="text" name="name" id="name" required />
+  </div>
+  <div class="form-example">
+    <label for="email">Enter your email: </label>
+    <input type="email" name="email" id="email" required />
+  </div>
+  <div class="form-example">
+    <input type="submit" value="Subscribe!" />
+  </div>
+</form>
+```
+
+---
+
+### 004. JS 화면에 표시하기
+
+#### `Node.textContent`
+
+`Node` 인터페이스의 `textContent`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Node/textContent)) 속성(property)은 노드와 그 자손의 Text 콘텐츠를 반환하는데, `Node`가 `document` 또는 `Doctype`이면 `null`을 반환한다. 이를 통해 해당 `Node`의 Text 컨텐츠를 변경할 수도 있다.
+
+`innerText`와의 가장 큰 차이는 `textContent`는 `<script>`와 `<style>` 요소를 포함한 모든 요소의 콘텐츠를 가져와서 `Node`의 모든 요소를 반환한다는 점이다.
+
+#### `Element.innerHTML`
+
+`Element`의 `innerHTML`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Element/innerHTML)) 속성(property)은 요소(element) 내에 포함 된 HTML 또는 XML 마크업을 가져오거나 설정한다. 다만, 일반 Text를 삽입 할 때는 `innerHTML` 을 사용하지 않는 것이 좋다.
+
+#### `Document.createElement()` & `Document.createTextNode()`
+
+`Document.createElement(tagName)`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Document/createElement)) method는 HTML 문서에서 지정한 `tagName`의 HTML 요소를 만들어 반환하고, `Document.createTextNode()`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Document/createTextNode)) method는 Text `Node`를 생성한다.
+
+다만, 다른 태그에 `Element.append()`, `Node.appendChild()`하기 전까지 화면에 보이지 않는다.
+
+#### `Element.append()`
+
+`Element.append()`([mdn](https://developer.mozilla.org/en-US/docs/Web/API/Element/append)) method는 Element의 마지막 자식 뒤에 `Node` 객체 또는 `DOMString` 객체의 집합을 삽입한다. `Node.appendChild()`와 달리 `DOMString` 객체를 추가할 수 있고, 반환 값이 없으며, 여러 `Node`와 문자열을 함께 삽입할 수 있다는 것이 장점이다.
+
+```js
+let div = document.createElement("div");
+let p = document.createElement("p");
+div.append("Some text", p);
+```
+
+#### `Node.appendChild()`
+
+`Node.appendChild()`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Node/appendChild)) method는 한 `Node`를 특정 부모 `Node`의 자식 `Node` 리스트 중 마지막 자식으로 추가한다. 만약 주어진 `Node`가 이미 문서에 존재하는 `Node`를 참조하고 있다면 `Node.appendChild()` method는 `Node`를 현재 위치에서 새로운 위치로 이동시키게 된다. `Node.appendChild()`는 추가된 `Node` 객체를 반환 값으로 가지고, 단지 하나의 `Node`만 추가할 수 있다.
+
+```js
+let p = document.createElement("p");
+document.body.appendChild(p);
+```
+
+---
+
+### 005. Event 해제하기
+
+#### `EventTarget.removeEventListener()`
+
+`EventTarget.removeEventListener(type, listener)`([mdn](https://developer.mozilla.org/ko/docs/Web/API/EventTarget/removeEventListener)) method는 이전에 `EventTarget.addEventListener(type, listener)`로 `EventTarget`에 등록했던 Event Listener를 제거한다. 이때, Event 종류와 Listener 함수 자체의 조합으로 식별되어 제거되며, 등록 시 제공했던 다양한 옵션과 일치하는 이벤트 리스너만 제거할 수 있다.
+
+```js
+element.addEventListener("mousedown", handleMouseDown, true);
+```
+
+---
+
+### 006. 배열 함수 정리
+
+#### array.push(element)
+
+#### array.splice(start, deleteCount)
+
+#### array.join(seperator) <-> string.split(seperator)
+
+#### indexOf, includes
+
+배열이나 문자열에 원하는 값이 들어 있는지를 찾는 Method.
+
+원하는 값이 존재하는 경우에, indexOf는 해당 index를, includes는 true를 반환하고, 존재하지 않는 경우에는 -1, false를 반환한다.
+
+#### Array.forEach((element, index) => {});
+
+forEach의 인수로는 함수가 들어가고, 해당 함수의 parameter로 해당 Array의 요소 값과 인덱스 번호가 들어간다. 이러한 Element, index를 통해 Array에 해당 함수의 동작문을 적용할 수 있다.
+
+#### Array.map((element, index) => { return });
+
+map의 인수로도 함수가 들어가고, 해당 함수의 parameter로 동일하게 해당 Array의 요소 값, 인덱스 번호가 들어간다. 이를 통해 해당 Array에 해당 함수 return 값으로 새로운 Array를 만든다.
+다만, 기존 배열은 수정되지 않는다는 특징이 있다.
+
+#### Array.fill(value);
+
+배열에 각 요소에 value 값을 삽입하는 함수로, Array.fill(); 로 작성하면, `undefined`가 삽입된다.
+
+#### Array(number);
+
+Array.length = number인 빈 배열을 작성하는 방법.
+
+---
+
+### _Notes_
+
+1. 알고리즘
+   우선, '인간'이라면 어떻게 했을 지에 대해 생각한 후 더 효율적인 방안이 있는지 파악하고, 이를 코드로 작성하면 된다. 다만, 관련된 지식을 가지고 있어야 한다.
+   보통 30 이하의 수를 찾거나 정렬하는 경우 처음 생각한대로 해도 효율적이다.
+   이후 예시를 통한 검증 과정을 거치면서 예외를 확인하여 고칠 수 있다.
+
+2. Code 작성 시 고려해야할 사항
+   나중에 코드를 수정할 때 한 변수를 수정하는 경우 연이어 수정해야 하는 경우를 방지하기 위해 변수를 연결하는 것이 중요하다. 즉, 추후 수정할 것도 염두에 둔 코드를 작성해야 한다.
+
+3. `stopPropagation()`: 현재 이벤트가 상위로 전파되는 것을 막는 것이다.
+   `stopImmediatePropagation()`: 현재 이벤트가 상위뿐만 아니라 현재 레벨에 걸린 다른 이벤트도 동작하지 않도록 중단하는 것이다.
+
+4. `Set()` ([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Set))
+   Set 객체는 자료형에 관계 없이 원시 값과 객체 참조 모두 유일한 값을 저장할 수 있는
+   중복을 허용하지 않는 특수한 배열이다. 요소의 개수를 구하기 위해 `length` method가 아닌 `size` method를 사용한다.
+
+5. HTML의 검증
+   `required`, `minlength = '4'`, `maxlength = '4'`, `pattern = "^(?!._(.)._\1)\d{4}$>`([정규표현식 참고](https://github.com/ziishaned/learn-regex)) 등을 통해 `<input>`의 값을 검증할 수 있다.
+   다만, 최근에는 HTML의 검증이나, `prompt()`, `alert()` 등은 활용하지 않는 추세이다.
+
+---
+
+---
+
+## Chapter 6. Lotto
+
+### 000. FlowChart
+
+![FlowChart_Lotto](./img/flowChart/FlowChart_Lotto.png)
+
+---
+
+### 001. Rules
+
+1. 1 ~ 45 사이의 숫자를 대상으로 한다.
+2. 당첨 번호 6개를 무작위로 추출한다.
+3. 보너스 번호 1개를 무작위로 추출한다.
+4. Timer를 활용해 1초 간격으로 추출한다.
+
+---
+
+### 002. 비동기 개념과 Timer
+
+1. Timer: 정해진 시간 후에 작성된 코드가 실행될 수 있도록 설정
+2. 비동기: 실제 코드를 작성한 순서와 다르게 동작하는 코드를 의미(예: EventListner, Timer 등) -> 순서도 상의 대기 이후에 실행되는 코드
+
+### 003. Fisher-Yates Shuffle
+
+전체 배열을 무작위로 정렬하고, 앞에서 원하는 개수만큼 추출하면 무작위가 된다.
+
+즉, 먼저 무작위 인덱스를 하나 선정한 후, 그에 해당하는 요소를 새로운 배열로 옮기는 작업을 반복해 새 배열에 무작위로 섞인 숫자를 정렬하는 방법이다.
+
+#### Array.slice(start, end);
+
+배열의 범위를 start index부터 end index 이전까지 자른다.(원래 배열은 수정되지 않는다.)
+splice와 구분된다.
+
+#### Array.sort(compareFunction);
+
+원본 배열을 비교함수에 따라 정렬한다.
+(a, b) => a - b : 오름차순(숫자, 날짜)
+(a, b) => b - a : 내림차순(숫자, 날짜)
+문자열도 정렬할 수 있다.
+(a, b) => a[0].charCodeAt() = b[0].charCodeAt() : 첫 문자 알파벳 순
+(a, b) => b[0].charCodeAt() = a[0].charCodeAt() : 첫 문자 알파벳 역순
+(a, b) => a.localeCompare(b) : 사전 순
+(a, b) => b.localeCompare(a) : 사전 역순
+
+```javascript
+array = [3, 2, 9, 7, 5, 8, 6, 4, 1];
+array.slice().sort((a, b) => {
+console.log(a, b, a-b);
+return a - b;
+})
+
+2 3 -1
+9 2 7
+7 3 4
+7 9 -2
+5 7 -2
+5 3 2
+8 5 3
+8 9 -1
+8 7 1
+6 7 -1
+6 3 3
+6 5 1
+4 6 -2
+4 3 1
+4 5 -1
+1 6 -5
+1 4 -3
+1 3 -2
+1 2 -1
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+즉, a - b가 0보다 크면, b -> a 순서로, 0보다 작으면, a -> b 순서로 정렬된다.
+
+#### tips
+
+원본 배열을 수정하는 것을 방지하기 위해서 해당 method를 사용할 때 항상
+Array.slice().sort(~);
+로 사용하면 원본 배열을 수정하지 않고 사용할 수 있다.
+
+### 004. 일정 시간 후에 실행하기
+
+setTimeout(callbackfunction, ms) 함수(지정한 시간 후에 지정한 작업을 수행하는 Timer)를 활용해야 한다.
+
+다만, 기본적으로 javascript는 한 번에 한 가지 일만 수행할 수 있기 때문에, 이미 다양한 일을 수행하고 있다면 설정한 시간이 되어도 지정된 작업이 수행되지 않고, 기존에 하던 작업이 종료된 후에 수행된다.
+
+### 005. Scope 이해: Function Scope & Block Scope
+
+변수는 Scope(해당 변수에 접근할 수 있는 범위)를 갖는데, var로 선언한 변수는 Function Scope, let으로 선언한 변수는 Block Scope를 갖는다.
+
+따라서, if, for, while 등에서는 var로 선언한 변수는 해당 Block 외부에서도 접근할 수 있으나, let으로 선언한 변수에는 접근할 수 없다.
+
+```javascript
+for (var i = 0; i < winBalls.length; i++) {
+    setTimeout(() => {
+      console.log(winBalls[i], i);
+      drawLotto(winBalls[i], $lottoResult);
+    }, (i + 1) * 1000);
+  }
+
+(6) undefined 6
+```
+
+<코드의 실행 순서>
+i = 0, setTimeout(callback 0, 1000) 실행(Timer 등록)
+i = 1, setTimeout(callback 1, 2000) 실행(Timer 등록)
+i = 2, setTimeout(callback 2, 3000) 실행(Timer 등록)
+i = 3, setTimeout(callback 3, 4000) 실행(Timer 등록)
+i = 4, setTimeout(callback 4, 5000) 실행(Timer 등록)
+i = 5, setTimeout(callback 5, 6000) 실행(Timer 등록)
+i = 6,
+1초 후 callback(0) 실행(i = 6)
+2초 후 callback(1) 실행(i = 6)
+3초 후 callback(2) 실행(i = 6)
+4초 후 callback(3) 실행(i = 6)
+5초 후 callback(4) 실행(i = 6)
+6초 후 callback(5) 실행(i = 6)
+
+이와 달리 let으로 변수를 선언하면, 해당 for문 block에 변수 i가 고정되어 callback 함수 내부의 i와 setTimeout의 i가 같은 값이 된다.
+
+var으로 해결하기 위해서는 closer(함수(setTimeout)와 함수 외부의 변수(i) 간의 관계)문제를 해결해야 한다.(var, 비동기가 결합된 문제)
+
+```javascript
+for (var i = 0; i < winBalls.length; i++) {
+  (function (j) {
+    setTimeout(() => {
+      console.log(winBalls[j], j);
+      drawLotto(winBalls[j], $lottoResult);
+    }, (j + 1) * 1000);
+  })(i);
+}
+```
+
+즉, 새로운 function으로 Function Scope에 맞는 j를 활용해 이를 매개변수로 설정하고, 새로운 function의 인수로 i를 활용하면 된다. 이때 함수를 소괄호()로 감싸고, 실행하면 즉시 실행된다.
+
+### 006. 기능 추가하기
+
+1. 추첨 이전에 Lotto를 직접 구매한다고 생각하고, 특정 숫자를 입력하고, 추첨된 번호와 일치 여부를 판단해 등수 매기기
+2. 숫자 야구에서 반복문을 통해 몇 번 무작위 추첨이 있어야 당첨되는지 여부 확인하기, 몇 번 이내에 맞추면 등수와 상품을 알려주기
+
+### 007. _Notes_
+
+1. `while`, `for`
+   조건이 간단한 경우 while을 사용하면 더 간결하게 작성할 수 있고, for는 명확한 반복 범위가 존재할 때 사용하면 더 쉽게 작성할 수 있다.
+
+## Chapter 07. RSP game
+
+### FlowChart
+
+### 상대경로와 절대경로
+
+1. relative path
+
+`./`: current folder
+`../`: parent folder
+
+2. absolute path, full path
+
+`/`: C drive
+
+### image sprite
+
+요청의 효율성과 속도를 높이기 위해 사용하는 기법으로, 이미지를 하나로 합쳐 사용한다.
+
+### CSS background
+
+1. position
+2. size
+
+### Object
+
+공통점을 가진 여러 변수를 묶어 객체로 표현하여 중복 변수명 문제를 해결하고, 그룹화하여 관리할 수 있다.
+
+```javascript
+const rspX = {
+  rockX = '-220px',
+  scissorsX = '-0',
+  paperX = '-440px',
+};
+```
+
+### setInterval을 통한 일정 시간마다 반복하기
+
+setInterval(intervalFunction, ms)도 내부 intervalFunction의 동작 시간이 설정된 시간을 초과하는 경우에는 내부의 intervalFunction이 전부 실행된 이후에 즉시 다음 interval이 실행된다.(다만, 간격을 보장하고자 최대한 노력한다.)
+
+setTimeout을 재귀(함수가 자신을 다시 호출하는 함수) 사용하여 같은 효과를 낼 수 있다.(다만, 해당 간격 이상만 되면 상관 없는 경우에 사용한다. 즉, 내부 함수가 모두 실행된 후에 재귀함수가 호출되기 때문에 설정한 시간 이후 다시 실행된다.)
+
+```javascript
+let computerChoice = "rock";
+
+const changeComputerRSP = () => {
+  if (computerChoice === "rock") {
+    // rock
+    computerChoice = "scissors";
+  } else if (computerChoice === "scissors") {
+    // scissors
+    computerChoice = "paper";
+  } else if (computerChoice === "paper") {
+    // paper
+    computerChoice = "rock";
+  }
+  $RSPComputer.style.background = `url(${IMG_URL}) ${rspX[computerChoice]} 0`;
+  $RSPComputer.style.backgroundSize = "auto 200px"; // Error 방지를 위해 작성
+  setTimeout(changeComputerRSP, 50); // 재귀함수
+};
+
+setTimeout(changeComputerRSP, 50);
+```
+
+### Tips
+
+if-else 구문에서 약간의 오탈자로 인해 Error가 발생할 수 있으니, 가능하다면 else보다 else if로 조건을 작성해주는 것이 좋다.
+
+### Timer 멈추기
+
+setInterval의 return값을 clearInterval 함수에 넣으면 setInterval 함수를 취소할 수 있다. 이와 유사하게 setTimeout 함수도 return 값을 활용해 clearTimeout 함수로 취소할 수 있으나, setTimeout 함수에 인수로 넣은 함수가 실행되기 전에 clearTimeout을 호출해야 한다.
+
+```javascript
+let idInterval = setInterval(Function, ms);
+clearInterval(idInterval);
+
+let idTimeout = setTimeout(Function, ms);
+clearTimeout(idTimeout);
+```
+
+### button click 버그
+
+changeComputerRSP에 의해 변경되는 그림이 멈춘 동안 button을 여러번 클릭하면, 더 빠르게 변경되고, 이후에 button을 클릭해도 멈추지 않는 것을 볼 수 있다.
+
+즉, button을 누를 때마다, setTimeout 함수가 호출되기 때문에, 여러번 button을 클릭하면 Timer가 여러 개 동작하게 되고, 이를 clear하지 않기 때문에 문제가 된다.
+
+또한, button을 5번 클릭한 경우, intervalId에 마지막 button 클릭에 의한 setInterval() 함수의 id 값이 저장되기 때문에 다음 button 클릭 시 마지막 Interval만 clear되어 앞의 4번의 Interval에 의해 계속 돌아가게 된다.
+
+1. bug 제거 (1)
+   button 클릭 가능하나, 계속 타이머 제거
+   clearInterval(intervalId)으로 타이머 제거
+
+2. bug 제거 (2)
+   button 클릭 자체가 불가능
+
+```javascript
+$RSPRock.removeEventListener("click", clickRSPBtn);
+$RSPScissors.removeEventListener("click", clickRSPBtn);
+$RSPPaper.removeEventListener("click", clickRSPBtn);
+```
+
+배열과 객체는 동일한 선언문으로 선언하더라도 `===`으로 비교하면, `false`가 반환된다. 따라서, 고차함수에서 return값으로 내부 함수를 EventListener에 연결했을 때, 다시 remove하면 제대로 동작하지 않는다.
+
+이를 해결하기 위해서는 변수에 넣어 참조해주는 경우에만 같은 함수로 remove가 제대로 동작한다.
+
+3. bug 제거 (3) 추천!
+   flag 변수 활용
+   if문을 활용해 분기를 생성해서 click은 가능하나 내부 코드가 실행되지 않게 하기
+
+```javascript
+let clickable = true;
+const clickRSPBtn = () => {
+  if (clickable) {
+    clearInterval(intervalId);
+    clickable = false;
+    // 점수 계산 및 화면 표시
+    setTimeout(() => {
+      clickable = true;
+      intervalId = setInterval(changeComputerRSP, 50);
+    }, 1000);
+  }
+};
+```
+
+### event.target.textContent or .id
+
+event.target.textContent로 user가 선택한 가위바위보를 조회할 수 있다.
+
+```javascript
+const myChoice =
+  event.target.textContent === "RSP__rock"
+    ? "rock"
+    : event.target.id === "RSP__scissors"
+    ? "scissors"
+    : "paper";
+```
+
+```javascript
+const myChoice = event.target.id;
+```
+
+### 점수 계산하기
+
+총 9가지의 경우의 수를 나열하기 위해 9번의 if문을 작성해야 한다.
+
+```javascript
+const myChoice = event.target.id; // user가 선택한 RSP
+let score = 0;
+if (myChoice === "RSP__rock") {
+  if (computerChoice === "RSP__rock") {
+    score += 1;
+  } else if (computerChoice === "RSP__scissors") {
+    score += 3;
+  } else if (computerChoice === "RSP__paper") {
+    score += 0;
+  }
+} else if (myChoice === "RSP__scissors") {
+  if (computerChoice === "RSP__rock") {
+    score += 0;
+  } else if (computerChoice === "RSP__scissors") {
+    score += 1;
+  } else if (computerChoice === "RSP__paper") {
+    score += 3;
+  }
+} else if (myChoice === "RSP__paper") {
+  if (computerChoice === "RSP__rock") {
+    score += 3;
+  } else if (computerChoice === "RSP__scissors") {
+    score += 0;
+  } else if (computerChoice === "RSP__paper") {
+    score += 1;
+  }
+}
+
+$RSPScore.textContent = Number($RSPScore.textContent) + score;
+```
+
+다만 이렇게 작성하면, 코드의 중복이 심하고, 간결하지 않기 때문에 새로운 규칙을 만드는 것이 좋다.
+
+문자열을 기준으로 하는 경우에는, 숫자를 대입하여 사칙 연산의 결과값을 기준으로 분기를 나누면 더 쉽고 간결한 코드를 작성할 수 있다.
+
+```javascript
+const RSPScoreTable = {
+  RSP__rock: 0,
+  RSP__scissors: 1,
+  RSP__paper: -1,
+};
+
+const myScore = RSPScoreTable[myChoice];
+const computerScore = RSPScoreTable[computerChoice];
+const diff = myScore - computerScore;
+
+if (diff === 2 || diff === -1) {
+  score += 3;
+} else if (diff === 0) {
+  score += 1;
+} else if (diff === 1 || diff === -2) {
+  score += 0;
+}
+
+$RSPScore.textContent = Number($RSPScore.textContent) + score;
+```
+
+### Tips
+
+`||`을 활용한 코드는 배열의 includes method로 더 간결하게 표현할 수 있다.
+
+```javascript
+diff === 2 || diff === -1;
+```
+
+```javascript
+[2, -1].includes(diff);
+```
+
+```javascript
+[2, -1].indexOf(diff) > -1;
+```
+
+### jsfuck(난독화), codegolf(간결화)
+
+$RSPScore.textContent = `current score = ${score}점, ${message}`;
+
+## bug
+
+15:15에서 you win? -> 수정하기
+
+## Chapter 08. Response Speed Test
+
+시간 측정을 위해서 시간과 관련된 Method인 Date 객체를 사용한다. 이후 반응 속도를 기록하여 평균을 내고 화면에 표시한다.
+
+### 000. Flow Chart
+
+<img scr='../img/flowChart/FlowChart_ResponseSpeedTest' alt='FlowChart'>
+
+### 001. Rules
+
+1. 시작 화면(Blue)
+2. Click시 준비 화면(Orange)
+3. 임의의 시간 이후 테스트 화면(Green)
+4. 테스트 화면이 출력된 시간과 테스트 화면을 Click 한 시간의 차이를 구해 반응 속도를 측정.
+5. 준비 화면에서 Click 시, 성급 Message 출력 후 다시 시작 화면으로 돌아감.
+
+### 002. classList 수정하기
+
+화면의 색 별로 다르게 동작하기보다, 해당 화면에 부여된 className에 따라 다르게 동작하도록 구현하는 것이 좋다.
+따라서, CSS에서 미리 설정해둔 className인 'ready', 'set', 'go'를 구분해야 한다. 이러한 경우 두 가지 방법으로 className을 확인할 수 있다.
+
+```js
+$ResponseScreen.className === "className"; // true
+
+$ResponseScreen.classList.contains("className"); // true
+```
+
+이때 classList에서 className를 추가/수정/제거하기 위해서 method를 활용해야 한다.
+
+```js
+$ResponseScreen.classList.add("className");
+$ResponseScreen.classList.replace("className__remove", "className__add");
+$ResponseScreen.classList.remove("className");
+```
+
+### 003. 시간 기록하기
+
+현재 시간은 `new` 예약어와 `Date()` 함수를 통해 기록할 수 있다.
+
+```js
+new Date();
+```
+
+특정 시간을 지정하고 싶다면, 인수로 삽입하면 된다. 다만 유의해야할 점은 '월'은 0부터 시작한다.
+
+```js
+new Date(2021, 7, 2, 8, 55, 33);
+
+< Mon Aug 02 2021 08:55:33 GMT+0900 (한국 표준시)
+```
+
+이렇게 시작 시간과 종료 시간을 기록하여 차이를 구하면, ms 단위로 결과값이 반환된다. `Date()`의 기준은 1970년이므로, 현재에 가까울수록 더 크기가 크다.
+
+### 004. 배열 평균 구하기
+
+```js
+array.reduce((a, c) => a + c) / array.length;
+```
+
+배열의 평균을 구할 때 `array.reduce(calcFunction, initialValue, index)` method를 활용한다.
+
+```js
+const array = [1, 2, 3, 4];
+array.reduce((a, c) => a + c, 0);
+   // a: accumulator, c: currentValue
+   // a = 0, c = 1 -> a + c = 1
+   // a = 1, c = 2 -> a + c = 3
+   // a = 3, c = 3 -> a + c = 6
+   // a = 6, c = 4 -> a + c = 10
+
+< 10
+```
+
+이 경우 초기값을 생략하면, 배열의 첫 값이 초기값이 되고, currentValue는 배열의 두 번째 값이 된다.
+
+```js
+const array = [1, 2, 3, 4];
+array.reduce((a, c) => a * c, 1);
+   // a: accumulator, c: currentValue
+   // a = 1, c = 1 -> a * c = 1
+   // a = 1, c = 2 -> a * c = 2
+   // a = 2, c = 3 -> a * c = 6
+   // a = 6, c = 4 -> a * c = 24
+
+< 24
+```
+
+`reduce` method를 활용해 배열을 객체로 변경할수도 있다.
+
+```js
+const arr = ['James', 'Smith', 'Bread', 'Tom']
+arr.reduce((a, c, i) => { a[i] = c; return a }, {});
+   // a = {}, i = 0, c = 'James' => { 0: 'James' }
+   // a = { 0: 'James' }, i = 1, c = 'Smith' => { 0: 'James', 1: 'Smith' }
+   // a = { 0: 'James', 1: 'Smith' }, i = 2, c = 'Bread' => { 0: 'James', 1: 'Smith', 2: 'Bread' }
+   // a = { 0: 'James', 1: 'Smith', 2: 'Bread' }, i = 3, c = 'Tom' => { 0: 'James', 1: 'Smith', 2: 'Bread', 3: 'Tom' }
+
+< { 0: 'James', 1: 'Smith', 2: 'Bread', 3: 'Tom' }
+```
+
+### 005. 성급하다는 메세지 출력하기
+
+단순히 className을 변경하고, textContent를 수정하면, bug가 발생한다. 따라서, Timer를 초기화해야 한다.
+
+### 006. 기능 추가
+
+속도 순으로 정렬하기(완)
+다시시작 Btn 만들기
+
+비동기의 경우 변수 선언 순서에 유의해야 한다.
+
+### 007. debugger를 활용하기
+
+debugger를 활용해서 해당 코드 순서의 정보를 확인할 수 있다.
+
+## Chapter 09. Tic-Tac-Toe game
+
+### 000. FlowChart
+
+<img scr='../img/flowChart/FlowChart_Tic-Tac-Toe' alt='FlowChart'>
+
+### 001. Rules
+
+1. user가 선공으로 3\*3 표 중 1칸을 선택한다.
+2. 컴퓨터가 임의로 빈 칸을 선택한다.
+3. 가로, 세로, 대각선으로 3개를 연달아 동일한 자신의 표식을 입력하면 승리한다.
+4. 승부가 가려지지 않고, 9개의 칸을 모두 채우면 무승부가 된다.
+
+### 002. 2차원 배열 준비하기
+
+배열 안의 배열이 구성되어 있는 것을 2차원 배열이라고 한다. 보통 '표'는 2차원 배열로 표현할 수 있다.
+
+2차원 배열은 for 문을 활용해서 작성하는 것이 크기에 상관없이 작성할 수 있기 때문에 더 좋다.
+
+```js
+const 2_dimension_array = [];
+for (let i = 0; i < ('Length you want'); i++) {
+  2_dimension_array.push([]);
+}
+```
+
+이렇게 배열을 설정한 후에는 표를 그리기 위해, <table>, <tr>, <td> tag를 활용해야 한다.
+
+```js
+const $table = document.createElement("table");
+
+for (let i = 0; i < "Length you want"; i++) {
+  const $tr = document.createElement("tr");
+  for (let j = 0; j < "Length you want"; j++) {
+    const $td = document.createElement("td");
+    $tr.append($td);
+  }
+  $table.append($tr);
+}
+
+document.body.append($table);
+```
+
+다른 방법으로, 빈 배열 `rows`, `cells` 를 활용할 수 있다.
+
+```js
+const rows = [];
+
+for (let i = 0; i < 5; i++) {
+  const cells = [];
+
+  for (let j = 0; j < 4; j++) {
+    cells.push("cellsContents");
+  }
+  rows.push(cells);
+}
+```
+
+### 003. 구조 분해 할당(Distructuring)
+
+```js
+const body = document.body;
+```
+
+`{}`를 활용해 구조 분해 할당을 하면 다음과 같다.
+
+```js
+const { body } = document;
+```
+
+객체인 `document` 내에 `body` 속성이 있는 경우에, 간결하게 작성하는 문법으로, 객체의 속성을 변수에 할당할 때 해당 속성과 변수 명이 동일한 경우에 사용할 수 있다. 이러한 객체 구조 분해 할당은 같은 객체 내에 존재하는 여러 속성을 모두 각각 동일한 변수명으로 할당할 때 특히 유용하다.
+
+```js
+const body = document.body;
+const createElement = document.createElement;
+const querySelector = document.querySelector;
+```
+
+동일한 객체 내에 존재하는 다른 속성을 더 간결하게 변수에 할당할 수 있다.
+
+```js
+const { body, createElement, querySelector } = document;
+```
+
+이러한 객체 구조 분해 할당은 특정 index의 값을 변수에 할당할 때 배열에서도 활용할 수 있다.
+
+```js
+const arr = [1, 2, 3, 4, 5];
+const one = arr[0];
+const three = arr[2];
+const four = arr[3];
+const five = arr[4];
+```
+
+구조 분해 할당을 하는 경우 자릿수가 일치해야 한다는 점에 유의해야 한다.
+
+```js
+const [one, , three, four, five] = arr;
+```
+
+```js
+const obj = {
+  a: 1,
+  b: {
+    c: 2,
+    d: { e: 3 },
+  },
+};
+```
+
+```js
+const {
+  a,
+  b: {
+    c,
+    d: { e },
+  },
+} = obj;
+```
+
+### 004. Event Bubbling과 Event Capturing
+
+<td>에 직접 eventListener를 추가하면, 이후에 완전히 게임이 종료된 이후에는 각각 9개 모두 제거해주어야 한다. 따라서, eventListener를 한 번으로 작성하고, 제거할 수 있는 경우 이를 활용해야 한다.
+
+즉, 9개의 <td>에 eventListener를 추가하는 것이 아니라, <table>에 하나의 eventListener를 추가해도 동일하게 동작한다. 그 이유는 event.target이 <td>로 고정되어 있기 때문이다. 즉, <td>에서 발생한 click event가 부모 태그인 <tr>, <table>, <body>에 전달되는 것을 event Bubbling이라고 하는데, 이러한 현상이 발생해 event가 전달되기 때문이다.
+
+event Bubbling이 발생하면, event.target은 실제로 click한 태그가 되고, eventListener를 추가한 태그를 선택하려면, event.currentTarget를 활용해야 한다.
+
+만약 event Bubbling을 방지하려면, `event.stopPropagation();`을 추가하면 Bubbling 현상을 막을 수 있다.
+
+이와 반대로 부모 태그의 event가 자식 태그에 전달되는 것을 Event Capturing이라고 하는데, 이는 보통 popup을 닫을 때 사용한다.
+
+### 005. 순서에 맞게 표식 작성하고, 순서 변경하기
+
+`.textContent`를 활용해서 click event가 발생한 <td> 태그에 현재 순서의 표식을 작성할 수 있다.
+
+```js
+event.target.textContent = currentTurn;
+```
+
+이후에 해당 순서의 표식을 기준으로 조건부 삼항 연산자를 활용해서 순서를 변경해줄 수 있다.
+
+```js
+currentTurn = currentTurn === "❌" ? "⭕" : "❌";
+```
+
+### 006. 칸이 비어있는지 확인하기
+
+또한, 해당 칸이 비어있는지 여부를 확인하기 위해서는 `removeEventListener`를 통해 해당 eventListener를 제거하거나, if 문과 `return`을 통해 함수를 종료할 수 있다.
+
+```js
+if (event.target.textContent) {
+  return;
+}
+```
+
+다만, 매번 eventListener를 추가하고 제거하는 것은 error를 발생시킬 수 있기 때문에 if문과 `return`을 활용하는 것이 더 좋다.
+
+### 007. 승부가 났는지 확인하기
+
+승부가 났는지 확인하기 위해 `checkWinner()` 함수를 작성해야 한다. 이때, click 위치의 index를 알아야 하고, 가로줄, 세로줄, 대각선을 순차적으로 검사하여 승부를 가리고, 승리한 사람이 있다면, 처음 설정한 `hasWinner` 값을 `true`로 변경해야 한다.
+
+#### click 위치의 index 파악하기
+
+click한 <td> 태그의 위치를 파악하기 위해 해당 2차원 배열의 index를 forEach() method를 활용해서 파악할 수 있다.
+
+```js
+let rowIndex;
+let cellIndex;
+
+array.forEach((row, ridx) => {
+  row.forEach((cell, cidx) => {
+    if (cell === event.target) {
+      rowIndex = ridx;
+      cellIndex = cidx;
+    }
+  });
+});
+```
+
+다만, 몇 번째 줄, 몇 번째 칸인지 알아내는 더 쉬운 방법이 존재한다. `parentNode`는 현재 태그의 부모 태그를 선택하는 속성으로, <td>의 부모 태그인 <tr>을 선택하고, <tr> 태그는 `rowIndex` 속성을 제공해, 몇 번째 줄인지 파악할 수 있다. 또한, <td> 태그는 `cellIndex` 속성을 통해 몇 번째 칸인지 파악할 수 있게끔 해준다.
+
+```js
+const rowIndex = target.parentNode.rowIndex;
+const cellIndex = target.cellIndex;
+```
+
+이와 반대로, `children` 속성은 자식 태그를 선택하는 속성인데, 여러 개의 자식 태그를 배열 처럼 생긴 객체인 유사 배열 객체(array-like object)로 반환한다. 이러한 유사 배열 객체는 `indexOf`, `forEach`, `map`, `filter`, `reduce`와 같은 method를 활용할 수 없는데, `Array.from()`을 활용해 배열로 변경한 후에는 해당 method를 사용할 수 있다.
+
+#### 가로줄 검사
+
+가로로 3개가 동일한 표식을 가졌을 때를 확인하려면 선택한 칸의 `rowIndex`를 활용해 파악할 수 있다.
+
+```js
+if (
+  rows[rowIndex][0].textContent === currentTurn &&
+  rows[rowIndex][1].textContent === currentTurn &&
+  rows[rowIndex][2].textContent === currentTurn
+) {
+  hasWinner = true;
+}
+```
+
+#### 세로줄 검사
+
+세로로 3개가 동일한 표식을 가졌을 때를 확인하려면 선택한 칸의 `cellIndex`를 활용해 파악할 수 있다.
+
+```js
+if (
+  rows[0][cellIndex].textContent === currentTurn &&
+  rows[1][cellIndex].textContent === currentTurn &&
+  rows[2][cellIndex].textContent === currentTurn
+) {
+  hasWinner = true;
+}
+```
+
+#### 대각선 검사
+
+대각선으로 동일한 표식을 가지는 경우는 단 2가지이므로, 이를 index를 활용해 나타낼 수 있다.
+
+```js
+if (
+  rows[0][0].textContent === currentTurn &&
+  rows[1][1].textContent === currentTurn &&
+  rows[2][2].textContent === currentTurn
+) {
+  hasWinner = true;
+} else if (
+  rows[0][2].textContent === currentTurn &&
+  rows[1][1].textContent === currentTurn &&
+  rows[2][0].textContent === currentTurn
+) {
+  hasWinner = true;
+}
+```
+
+#### 결과 표시
+
+승리자가 있는 경우, `hasWinner` 변수를 `true`로 변경하고, 이를 반환하면 된다.
+
+```js
+hasWinner = true;
+
+return hasWinner;
+```
+
+#### 무승부 확인하기
+
+hasWinner 변수가 false 값을 가지면서, 모든 <td> 칸에 textContent가 존재하는 경우 무승부이다.
+
+```js
+let draw = true;
+rows.forEach((row) => {
+  row.forEach((cell) => {
+    if (!cell.textContent) {
+      draw = false;
+    }
+  });
+});
+if (draw) {
+  $tictactoeResult.textContent = `무승부`;
+  return;
+}
+```
+
+다만, forEach method를 두 번 모두 반복해야 하기 때문에, 맨 처음 칸만 비어있는 경우 비효율적인 동작을 해야 한다. 따라서 배열의 method인 `every`, `flat`를 활용하면 더 효율적인 코드를 작성할 수 있다. 보통 알고리즘 문제를 해결할 때, 필요한 것을 검색하거나 제거하거나 추가한 후에는 더이상 비효율적인 동작을 하지 않도록 작성하는 것이 정답에 가깝다.
+
+하지만, `every` method는 1차원 배열에만 적용되기 때문에, 2차원 배열을 `flat` method를 활용해 1차원 배열로 만든 후에 해당 method를 사용해야 한다.
+
+```js
+rows.flat().every((td) => {td.textContent});
+
+< false
+```
+
+따라서 모든 <td> 태그에 `textContent`가 존재하는 경우에만 `true`가 반환된다. 만약 `some` method를 사용하면, 하나라도 `textContent`가 존재하는 경우에 `true`가 반환되고, 모든 태그에 `textContent`가 없는 경우에만 `false`가 반환된다.
+
+```js
+rows.flat().some((td) => {td.textContent});
+
+< false
+```
+
+즉, `every` method는 반복문의 일종으로 요소를 순회하면서 조건 함수의 반환 값이 모두 `true`인 경우에만 `true`를 반환하고, 조건 함수의 반환 값이 하나라도 `false`인 경우에는 `every` method도 `false`를 반환한다. 이와 달리 `some` method는 조건 함수의 반환 값이 모두 `false`인 경우에만, `false`를 반환하고, 조건 함수의 반환 값이 하나라도 `true`인 경우에는 `true`를 반환한다.
+
+### 008. Bug 수정하기
+
+#### 승리 메시지 이후에도 Click이 되는 Bug
+
+따라서, 승리 이후 `$table`의 eventListener를 제거해야 한다.
+
+```js
+$tictactoeTable.removeEventListener("click", callback);
+```
+
+### 009. self-check
+
+#### 컴퓨터 차례 구현하기
+
+user 순서 이후에 비어있는 칸 중 무작위로 다른 표식을 입력하게 해야 한다.
+
+그나마 지능 구현하기
+
+### 010. 마무리
+
+#### 2차원 배열
+
+배열 내부에 배열이 있는 경우를 2차원 배열이라고 하는데, 이는 표, 엑셀, 데이터베이스 등에서 활용한다. 이러한 다차원 배열은 `flat` method로 1차원 배열로 변환할 수 있다.
+
+#### 구조 분해 할당
+
+객체 내부의 속성과 할당하는 변수명이 같을 때 구조 분해 할당을 통해 간결하게 작성할 수 있다. 또한, 여러 개의 속성을 동시에 변수에 할당할 수 있다. 배열에서도 구조 분해 할당을 할 수 있다.
+
+#### Event Bubbling과 Capturing
+
+event가 발생할 때 부모 태그에도 동일한 event가 발생하는 현상을 Bubbling이라고 한다. 즉, <td> 태그에서 발생한 click event가 <table> 태그까지 전달되는 것을 의미한다. 이러한 현상이 발생하면 `eventListener`의 `callback` 함수의 `event.target`이 event가 발생한 태그로 변경되고, 현재 `eventListener`가 연결된 태그를 선택하기 위해서는 `event.currentTarget`을 활용해야 한다.
+
+#### parentNode와 children
+
+현재 태그의 부모 태그를 조회할 때는 `parentNode` 속성을, 자식 태그를 조회할 때는 `children` 속성을 활용한다. 다만, `children` 속성은 유사 배열 객체이므로, `Array.from`을 통해 배열로 변경해 배열 method를 활용할 수 있다.
+
+#### rowIndex와 cellIndex
+
+<tr>은 몇 번째 줄인지 알려주는 `rowIndex` 속성을 가지고 있고, <td>는 몇 번째 칸인지 알려주는 `cellIndex` 속성을 가지고 있다.
+
+#### every와 some
+
+배열에서 모든 값이 조건에 해당하는 지 판단하려면 `every` method를 사용하고, 하나라도 조건에 해당하는 지 판단하려면 `some` method를 사용한다. 일반 반복문으로 충분히 구현할 수 있으나, 일반 반복문에서는 조건에 맞는 값을 찾아도 끝까지 탐색하기 때문에 `every`, `some` method가 더 효율적으로 작동한다.
+
+`every` method는 하나라도 조건을 만족하지 않는 요소(조건 함수가 `false`인 `return`)를 찾으면 반복을 중단하고, `some` method는 하나라도 조건을 만족하는 요소(조건 함수가 `true`인 `return`)를 찾으면 반복을 중단한다.
+
+## Chapter 10. Text RPG game
+
+### 000. FlowChart
+
+<img scr='../img/flowChart/FlowChart_TextRPG' alt='FlowChart'>
+
+### 001. Rules
+
+1. General Mode : go Shop, go Adventure, Time to rest, End game
+2. Adventure Mode : Attack, Heal, Defense, Run
+3. Victory: gain experience point(exp || xp) -> Lv up -> Attack, HP, DEF up
+4. Defeat: game over
+
+### 002. HTML 구성하기
+
+<form>을 활용해서, <input>, <button>를 작성하고, 각각 id, class를 활용해 작성해야 한다.
+
+각각 시작 화면, 캐릭터 정보 화면, 일반 모드 화면, 전투 모드 화면, 몬스터 정보 화면 총 5가지 화면으로 구성된다.
+
 ## Chapter 10. Text RPG
 
 ## 000. FlowChart
