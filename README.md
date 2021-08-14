@@ -1553,16 +1553,19 @@ Event가 발생할 때 부모 태그에도 동일한 Event가 발생하는 현�
 
 ### 001. Rules
 
-1. General Mode : go Shop, go Adventure, Time to rest, End game
-2. Adventure Mode : Attack, Heal, Defense, Run
-3. Victory: gain experience point(exp || xp) -> Lv up -> Attack, HP, DEF up
-4. Defeat: game over
+1. 일반 게임 메뉴 : go Shop, go Adventure, Time to rest, End game
+2. 모험 메뉴 : Attack, Heal, Defense, Run
+3. 승리 시 : gain experience point(exp) -> Lv up -> Attack, HP, DEF up
+4. 패배 시: game over
+5. 공격 시: Attack과 Defense 비교 후 HP 감소
+6. 방어 시: Attack과 Defense 비교 후 HP 감소
+7. 회복 시: HP + 20
 
 ---
 
 ### 002. HTML 구성하기
 
-`<form>`을 활용해서, `<input>`, `<button>`를 작성하고, 각각 id, class를 활용해 작성해야 한다.
+`<form>`을 활용해서, `<input>`, `<button>`를 작성하고, 각각 `id`, `class`를 활용해 작성해야 한다.
 
 각각 시작 화면('#start\_\_screen'), 캐릭터 정보 화면('#hero\_\_stat'), 일반 모드 화면('#game\_\_menu'), 전투 모드 화면('#battle\_\_menu'), 몬스터 정보 화면('#monster\_\_stat') 총 5가지 화면으로 구성된다.
 
@@ -1570,8 +1573,7 @@ Event가 발생할 때 부모 태그에도 동일한 Event가 발생하는 현�
 
 ## 003. HTML 화면 전환하기
 
-style 속성을 조작해 화면을 전환할 수 있다.
-`style.display = 'none'`을 통해 시작 화면을 숨기고, 일반 모드 화면을 `style.display = 'block'`을 통해 보이게 만들 수 있다.
+`style` 속성을 조작해 화면을 전환할 수 있다. 즉, `style.display = 'none'`을 통해 시작 화면을 숨기고, 일반 모드 화면을 `style.display = 'block'`을 통해 보이게 만들 수 있다.
 
 ---
 
@@ -1971,13 +1973,13 @@ class B extends A {}
 
 ## Chapter 11. Pairing Card game
 
-## 000. FlowChart
+### 000. FlowChart
 
 ![FlowChart_PairingCard](./img/flowChart/FlowChart_PairingCard.png)
 
 ---
 
-## 001. Rules
+### 001. Rules
 
 #### Javascript 필수 문법: 이벤트 루프, 실행 컨텍스트, 프로미스
 
@@ -1989,7 +1991,7 @@ class B extends A {}
 6. 전부 맞춘 경우 게임 진행 시간과 승리 메시지를 보여준다.
 7. Top7 기록을 남긴다.
 
-## 002. cards 생성하기
+### 002. cards 생성하기
 
 총 20장의 card를 생성하고, 각 card 마다 1 ~ 10 숫자를 작성하고, 해당 숫자의 색을 Yellow, White로 설정한다.
 
@@ -2024,7 +2026,7 @@ function cardShuffle() {
 }
 ```
 
-## 003. 카드 잠시 보여주고 뒤집기
+### 003. 카드 잠시 보여주고 뒤집기
 
 게임 시작 후, 모든 카드에 `flipped` className을 추가했다가 제거하면 된다.
 
@@ -2042,17 +2044,17 @@ document.querySelectorAll(".pairing__card").forEach((card, index) => {
 
 각각 다른 시간에 공개되게끔 ms에 `index`를 활용하여 약간의 차이를 둘 수 있다.
 
-## 004. 카드 클릭해 짝 맞추기
+### 004. 카드 클릭해 짝 맞추기
 
-### event Bubbling
+#### event Bubbling
 
 카드에 직접 eventListener를 각각 추가하는 것보다 event Bubbling을 활용하는 것이 더 좋을 수도 있다. 하지만, 이 경우 `pairingcard__wrapper`에 eventListener를 추가하게 되면, 카드와 카드 사이 여백을 클릭해도 event가 발생하기 때문에, 각각 추가하는 방법이 더 낫다.
 
-### eventListener callback 함수의 `this`
+#### eventListener callback 함수의 `this`
 
 `this`는 원래 `window`를 의미하나, eventListener callback 함수의 `this`는 해당 eventListener가 추가된 태그를 의미한다.
 
-### querySelector의 연속 사용
+#### querySelector의 연속 사용
 
 querySelector는 연달아 사용해서 자식 태그를 검색할 수 있다.
 
@@ -2067,7 +2069,7 @@ document.querySelector('head title');
 < <title>Web game</title>
 ```
 
-### `concat` method
+#### `concat` method
 
 ```js
 correctCards.push(clicked[0]);
@@ -2081,15 +2083,15 @@ clicked = [];
 correctCards = correctCards.concat(clicked);
 ```
 
-### 참고
+#### 참고
 
 성능은 알고리즘 문제와 실제로 사용자들이 사용하는 경우에 중요한데, 다른 것은 고려하지 않아도 되나 반복문을 중복해서 사용하는 경우에는 성능을 반드시 고려해야 한다.
 
-## 005. 새로 시작 btn 만들기
+### 005. 새로 시작 btn 만들기
 
 초기화하는 것이 중요한데, 이때 배열의 원본을 수정하게 되는 `method`, `push`, `pop`, `unshift`, `shift`, `splice`, `sort` 등을 사용하면 안 된다.
 
-## 006. bugs
+### 006. bugs
 
 1. victory message 이전에 마지막 card가 뒤집어지지 않는 bug
    victory message 코드에 `setTimeout` 추가해 수정 가능하다.
@@ -2114,29 +2116,29 @@ if (!isClickable || correctCards.includes(this) || clicked[0] === this) {
 
 이 bug는 Call Stack과 Event Loop와 관련되어 있다.
 
-## 007. 호출 스택(Call Stack) && Event Loop
+### 007. 호출 스택(Call Stack) && Event Loop
 
 click event는 비동기 event이다. 내부에 비동기 함수인 `setTimeout()` 함수가 존재하기 때문에 코드의 실행 순서를 파악하기 어렵다. 이를 명확하게 파악하려면 호출 스택(Call Stack)과 Event Loop에 대해 알고 있어야 한다.
 
 우선 호출 스택(Call Stack)은 동기 코드를 담당하고, Event Loop는 비동기 코드를 담당하고 있고, 추가적으로 비동기 코드 실행에는 background, task queue 개념이 필요하다.
 
-### 호출 스택(Call Stack)
+#### 호출 스택(Call Stack)
 
 호출 스택(Call Stack)은 **여러 함수**들이 실행되는 공간을 의미한다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기고, 호출 스택(Call Stack)으로 이동한 함수는 실행된다. 실행이 완료된 함수는 호출 스택(Call Stack)에서 빠져 나가고, 호출 스택(Call Stack)이 비어있기 때문에 다시 task queue의 다음 함수를 호출 스택(Call Stack)으로 옮긴다.
 
-### Event Loop
+#### 이벤트 루프(Event Loop)
 
 Event Loop는 호출 스택(Call Stack)이 비어있는 경우 task queue에서 function을 꺼내 실행해주는 역할을 한다. 즉, task queue에 대기하는 Function을 호출 스택(Call Stack)으로 이동시킨다. 호출 스택(Call Stack)이 비어있는 경우 task queue에서 함수를 하나씩 호출 스택(Call Stack)으로 옮기는 역할을 Event Loop가 맡고 있다.
 
-### background
+#### 백그라운드(background)
 
 background는 **Timer, EventListener** 등이 존재하는 공간을 의미한다. setTimeout() 함수가 실행되면, background에서 시간을 재고, 시간이 되면 setTimeout() 함수의 callback Function을 task queue로 보낸다. 즉, background에서 코드를 실행하는 것이 아니라, 실행될 callback Function이 task queue로 들어간다.
 
-### task queue
+#### 태스크 큐(task queue)
 
 taks queue는 Timer, EventListener 등의 **callback Function**이 존재하는 공간을 의미한다. 즉, 실행되어야 할 callback Function이 대기하는 공간이다. queue의 특성 상 먼저 들어온 함수부터 실행된다. 다만, task queue도 함수를 직접 실행하지는 않고, 모든 함수는 호출 스택(Call Stack)으로 들어가서 호출/실행된다.
 
-### 코드 분석하기
+#### 코드 분석하기
 
 변수, 함수의 선언은 호출 스택(Call Stack)과 Event Loop에 영향을 주지 않는다. 따라서, 해당 코드에서 처음으로 함수가 호출되는 순간은 `startGame()`이다.
 
@@ -2172,7 +2174,7 @@ setTimeout은 한 번만 실행되기 때문에 백그라운드(Background)에 �
 
 이후 모든 Timer의 callback Function이 동일한 과정을 거쳐 호출 스택에서 빠져나가면, 호출 스택과 태스크 큐 모두 비어있게 된다. 이 상태가 순서도에서 표시한 '대기' 상태가 된다.
 
-### bug #5 분석하기
+#### bug #5 분석하기
 
 백그라운드(background)에서 대기하고 있는 Card Click Event를 서로 다른 4장의 card를 연달아 click한 경우에서 2, 5, 8, 9번 card를 click했다고 가정하자.
 
@@ -2207,7 +2209,7 @@ click event가 4회 발생했으므로, 백그라운드에서 해당 click event
 
 ---
 
-### 참고
+#### 참고
 
 - setTimeout이 정확하지 않은 경우
   호출 스택에 이전에 들어있는 함수가 오래 걸리는 함수여서 Timer가 지정된 시간이 지났는데도 불구하고, 해당 Timer의 callback Function이 태스크 큐에서 호출 스택으로 넘어가지 못해 실행이 늦어지는 것.
@@ -2215,7 +2217,7 @@ click event가 4회 발생했으므로, 백그라운드에서 해당 click event
 - 유의사항
   설계할 때는 순서도를 작성하는 것이 중요하고, 코드를 작성할 때는 scope에 유의해야 한다. 이후 코드를 검증할 때 호출 스택, 이벤트 루프를 파악해야 한다.
 
-### Example Case
+#### Example Case
 
 ```js
 function aaa() {
@@ -2262,7 +2264,7 @@ d;
 
 www.latentflip.com/loupe
 
-## 008. 마무리
+### 008. 마무리
 
 1. 호출 스택(Call Stack)
    동기 함수만 있을 때는 호출 스택만 고려하면 된다. 함수가 호출될 때, 호출 스택에 들어가 실행이 되고, 실행이 끝나면 호출 스택에서 빠져나간다. 기존 함수의 실행이 완료되지 않았는데, 다른 함수가 호출되면 새로 호출된 함수는 기존 함수 위에 쌓이게 된다.
@@ -2271,13 +2273,19 @@ www.latentflip.com/loupe
 2. 이벤트 루프(Event Loop)
    비동기 함수가 실행될 때는 호출 스택뿐만 아니라, 이벤트 루프까지 동원해 실행 순서를 파악해야 한다. Timer, EventListener 같은 비동기 함수는 callback Function을 백그라운드에서 태스크 큐로 보낸다. 이벤트 루프는 호출 스택이 비어 있는 경우에 태스크 큐에서 하나씩 함수를 꺼내 호출 스택으로 보내 실행한다. 즉, 호출 스택이 비어 있지 않은 경우면, 태스크 큐에 있는 함수는 실행되지 않는다.
 
+---
+
+---
+
 ## Chapter 12. mine-sweeper
 
-## 000. FlowChart
+### 000. FlowChart
 
 <img src='./img/flowChart/FlowChart_minesweeper.png' alt='FlowChart'>
 
-## 001. Rules
+---
+
+### 001. Rules
 
 1. 테이블 모양의 칸을 만들기
 2. 지뢰를 무작위로 배치하기
@@ -2285,19 +2293,66 @@ www.latentflip.com/loupe
 4. 주변 지뢰 개수가 0이라면 한 번에 모든 칸을 여는 작업 설정하기
 5. 마우스 우클릭 시 물음표, 깃발 표시하기
 
+---
+
 ### 002. 지뢰 심기
 
-실제로 지뢰가 보이는 칸도 존재하고, 아직 열리지 않은 칸에도 존재하고, 깃발 혹은 물음표 표식을 가진 칸에도 존재할 수 있기 때문에, 단순히 `textContent`로만 지뢰를 나타내기는 부적절하다고 판단된다. 결국, 이러한 경우에는 javascript의 데이터와 화면을 따로 구성해주어야 한다.
+1. 개요
+   실제로 지뢰가 보이는 칸도 존재하고, 아직 열리지 않은 칸에도 존재하고, 깃발 혹은 물음표 표식을 가진 칸에도 존재할 수 있기 때문에, 단순히 `textContent`로만 지뢰를 나타내기는 부적절하다고 판단된다. 결국, 이러한 경우에는 javascript의 데이터와 화면을 따로 구성해주어야 한다.
 
-또한, 화면이 다양하게 표현되기 때문에 이러한 화면의 종류를 체계적으로 정리하고 분석해야 한다.
+   또한, 화면이 다양하게 표현되기 때문에 이러한 화면의 종류를 체계적으로 정리하고 분석해야 한다.
 
-- 클릭하여 터진 지뢰 칸에 나타나는 지뢰 모양과 빨간 색 배경화면
-- 클릭하지 않아 터지지 않은 지뢰 칸에 나타나는 지뢰 모양
-- Opened(1 ~ 8) | 열려서 인접 칸의 지뢰 갯수를 표현하는 1 ~ 8까지의 숫자
-- Opened(0) | 열렸으나 지뢰가 존재하지 않은 빈 칸의 화면(사실상 0)
-- Normal(-1) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재하지 않음)
-- Question(-2) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
-- Flag(-3) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
-- Question_Mine(-4) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재)
-- Flag_Mine(-5) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재)
-- Mine(-6) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재)
+   - 클릭하여 터진 지뢰 칸에 나타나는 지뢰 모양과 빨간 색 배경화면
+   - 클릭하지 않아 터지지 않은 지뢰 칸에 나타나는 지뢰 모양
+   - Opened(1 ~ 8) | 열려서 인접 칸의 지뢰 갯수를 표현하는 1 ~ 8까지의 숫자
+   - Opened(0) | 열렸으나 지뢰가 존재하지 않은 빈 칸의 화면(사실상 0)
+   - Normal(-1) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재하지 않음)
+   - Question(-2) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
+   - Flag(-3) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
+   - Question_Mine(-4) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재)
+   - Flag_Mine(-5) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재)
+   - Mine(-6) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재)
+
+2. 2차원 배열 생성하기
+   2차원 배열을 만들기 위해서 `for` 반복문을 중첩 활용한다.
+
+   ```js
+   let data = [];
+   for (let i = 0; i < row; i++) {
+     const rowData = [];
+     data.push(rowData);
+     for (let j = 0; j < cell; j++) {
+       rowData.push;
+     }
+   }
+   ```
+
+3. 지뢰 개수만큼 무작위로 칸 설정하기
+
+4. 2차원 배열에 지뢰 넣기
+   지뢰를 삽입할 칸의 숫자를 10a + b라고 할 때, 셀 개수로 나눠 일반화할 수 있다.
+   ```js
+   for (let k = 0; k < shuffle.length; k++) {
+     const verticalMinePosition = Math.floor(shuffle[k] / cell); // a번째 줄(몫)
+     const horizontalMinePosition = shuffle[k] % cell; // b번째 칸(나머지)
+     data[verticalMinePosition][horizontalMinePosition] = CODE.Mine; // 10a + b가 (a, b)에 삽입됨
+   }
+   ```
+
+```
+---
+
+### 003. mouse right click 기능 구현하기
+
+1.
+
+
+
+### 000. _Notes_
+
+1. 순서도의 절차에 맞는 함수를 우선 빈 함수로 구현하고 함수의 내용을 채워나가는 식으로 코드를 작성하는 것이 좋다.
+
+2. `<tr>`, `<td>`의 개수가 고정되어 있는 경우에는 HTML 화면에서 미리 구현하는 것이 좋으나, 사용자의 선택에 따라서 개수를 다르게 구현할 것이므로, javascript에서 `document.createElement()`를 활용하는 것이 더 좋다.
+
+3. 항상 Data를 먼저 작성하고, 화면을 이에 맞게 변경해주는 것이 더 좋다.
+```
