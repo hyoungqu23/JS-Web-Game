@@ -2297,56 +2297,138 @@ www.latentflip.com/loupe
 
 ### 002. 지뢰 심기
 
-1. 개요
-   실제로 지뢰가 보이는 칸도 존재하고, 아직 열리지 않은 칸에도 존재하고, 깃발 혹은 물음표 표식을 가진 칸에도 존재할 수 있기 때문에, 단순히 `textContent`로만 지뢰를 나타내기는 부적절하다고 판단된다. 결국, 이러한 경우에는 javascript의 데이터와 화면을 따로 구성해주어야 한다.
+#### 개요
 
-   또한, 화면이 다양하게 표현되기 때문에 이러한 화면의 종류를 체계적으로 정리하고 분석해야 한다.
+실제로 지뢰가 보이는 칸도 존재하고, 아직 열리지 않은 칸에도 존재하고, 깃발 혹은 물음표 표식을 가진 칸에도 존재할 수 있기 때문에, 단순히 `textContent`로만 지뢰를 나타내기는 부적절하다고 판단된다. 결국, 이러한 경우에는 javascript의 데이터와 화면을 따로 구성해주어야 한다.
 
-   - 클릭하여 터진 지뢰 칸에 나타나는 지뢰 모양과 빨간 색 배경화면
-   - 클릭하지 않아 터지지 않은 지뢰 칸에 나타나는 지뢰 모양
-   - Opened(1 ~ 8) | 열려서 인접 칸의 지뢰 갯수를 표현하는 1 ~ 8까지의 숫자
-   - Opened(0) | 열렸으나 지뢰가 존재하지 않은 빈 칸의 화면(사실상 0)
-   - Normal(-1) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재하지 않음)
-   - Question(-2) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
-   - Flag(-3) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
-   - Question_Mine(-4) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재)
-   - Flag_Mine(-5) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재)
-   - Mine(-6) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재)
+또한, 화면이 다양하게 표현되기 때문에 이러한 화면의 종류를 체계적으로 정리하고 분석해야 한다.
 
-2. 2차원 배열 생성하기
-   2차원 배열을 만들기 위해서 `for` 반복문을 중첩 활용한다.
+mouse right click Event 구현할 때, 구분하기 위해 지뢰가 있는 모양과, 지뢰가 없는 모양을 나누어야 한다.
 
-   ```js
-   let data = [];
-   for (let i = 0; i < row; i++) {
-     const rowData = [];
-     data.push(rowData);
-     for (let j = 0; j < cell; j++) {
-       rowData.push;
-     }
-   }
-   ```
+- 클릭하여 터진 지뢰 칸에 나타나는 지뢰 모양과 빨간 색 배경화면
+- 클릭하지 않아 터지지 않은 지뢰 칸에 나타나는 지뢰 모양
+- Opened(1 ~ 8) | 열려서 인접 칸의 지뢰 갯수를 표현하는 1 ~ 8까지의 숫자
+- Opened(0) | 열렸으나 지뢰가 존재하지 않은 빈 칸의 화면(사실상 0)
+- Normal(-1) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재하지 않음)
+- Question(-2) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
+- Flag(-3) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재하지 않음)
+- Question_Mine(-4) | 닫힌 칸에 작성한 물음표 모양의 표식이 부여된 화면(내부에 지뢰 존재)
+- Flag_Mine(-5) | 닫힌 칸에 작성한 깃발 모양의 표식이 부여된 화면(내부에 지뢰 존재)
+- Mine(-6) | 단순히 닫힌 칸의 화면(내부에 지뢰 존재)
 
-3. 지뢰 개수만큼 무작위로 칸 설정하기
+#### 2차원 배열 생성하기
 
-4. 2차원 배열에 지뢰 넣기
-   지뢰를 삽입할 칸의 숫자를 10a + b라고 할 때, 셀 개수로 나눠 일반화할 수 있다.
-   ```js
-   for (let k = 0; k < shuffle.length; k++) {
-     const verticalMinePosition = Math.floor(shuffle[k] / cell); // a번째 줄(몫)
-     const horizontalMinePosition = shuffle[k] % cell; // b번째 칸(나머지)
-     data[verticalMinePosition][horizontalMinePosition] = CODE.Mine; // 10a + b가 (a, b)에 삽입됨
-   }
-   ```
+2차원 배열을 만들기 위해서 `for` 반복문을 중첩 활용한다.
 
+```js
+let data = [];
+for (let i = 0; i < row; i++) {
+  const rowData = [];
+  data.push(rowData);
+  for (let j = 0; j < cell; j++) {
+    rowData.push;
+  }
+}
 ```
+
+#### 지뢰 개수만큼 무작위로 칸 설정하기
+
+#### 2차원 배열에 지뢰 넣기
+
+지뢰를 삽입할 칸의 숫자를 10a + b라고 할 때, 셀 개수로 나눠 일반화할 수 있다.
+
+```js
+for (let k = 0; k < shuffle.length; k++) {
+  const verticalMinePosition = Math.floor(shuffle[k] / cell); // a번째 줄(몫)
+  const horizontalMinePosition = shuffle[k] % cell; // b번째 칸(나머지)
+  data[verticalMinePosition][horizontalMinePosition] = CODE.Mine; // 10a + b가 (a, b)에 삽입됨
+}
+```
+
 ---
 
 ### 003. mouse right click 기능 구현하기
 
-1.
+mouse right click Event는 `'click'`이 아니라 `'contextmenu'`로 구현할 수 있다. 이때 기본 동작으로 메뉴가 열리는 것을 `event.preventDefault()`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Event/preventDefault)) method를 활용해서 차단해야 한다.
 
+또한, `HTMLTableRowElement.rowIndex`, `HTMLTableCellElement.cellIndex` 속성을 활용해 해당 칸의 데이터가 어떤 데이터인지에 따라 우클릭 Event 발생 시 표시를 변경하게끔 코드를 작성할 수 있다.
 
+각 칸의 상태에 따라, 해당 데이터를 변경하고, 그에 맞추어 화면을 변경해주는 것이 중요하다.
+
+```js
+data[rowIndex][cellIndex] = CODE.Question_Mine; // 데이터 변경
+target.className = "question"; // CSS 변경
+target.textContent = "?"; // 화면 변경
+```
+
+다만, 이때 중요한 것은 같은 `'?'` 칸이더라도 내부의 지뢰 여부에 따라 다른 데이터를 가지게 해야 다시 닫힌 칸으로 돌아올 때 문제가 발생하지 않는다는 점이다. 즉, 화면은 같은데 다른 데이터를 가지게 해야 이후에 문제가 발생하지 않는다.
+
+마지막으로 Event Bubbling을 통해 `<tbody>`에만 eventListener를 추가하고, 내부의 각 칸에 해당하는 `<td>`에는 Event Bubbling으로 Event가 전달되도록 할 수 있다.
+
+#### `HTMLTableRowElement.rowIndex`, `HTMLTableCellElement.cellIndex`
+
+이를 활용해 `<td>`의 부모 태그인 `<tr>`을 선택하고, `<tr>` 태그는 `rowIndex` 속성을 제공해, 몇 번째 줄인지 파악할 수 있다. 또한, `<td>` 태그는 `cellIndex` 속성을 통해 몇 번째 칸인지 파악할 수 있게끔 해준다.
+
+```js
+const rowIndex = target.parentNode.rowIndex;
+const cellIndex = target.cellIndex;
+```
+
+#### Event Bubbling
+
+`<td>`에 직접 100개의 eventListener를 추가하면, 이후에 완전히 게임이 종료된 이후에는 각각 100개 모두 제거해주어야 한다.
+
+따라서 `<tbody>`에 하나의 eventListener를 추가하여 Event Bubbling을 활용해 쉽게 코드를 작성할 수 있다.
+
+만약 Event Bubbling을 방지하려면, `event.stopPropagation()`([mdn](https://developer.mozilla.org/ko/docs/Web/API/Event/stopPropagation)) method을 추가하면 Bubbling 현상을 막을 수 있다.
+
+---
+
+### 004. mouse left click 기능 구현하기
+
+#### 주변 셀 선택하기
+
+rowIndex, cellIndex를 활용
+
+#### `Array.prototype.includes()`
+
+`Array.prototype.includes(valueToFind, |fromIndex|)`([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/includes))
+
+#### && || 기능([javascript.info](https://ko.javascript.info/logical-operators))
+
+&& 존재 하면, 2를 실행
+|| 존재하지 않으면, 2를 실행
+
+#### Optional Chaining (?.)([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Optional_chaining))
+
+객체나 배열에서 존재하지 않는 경우에 undefined를 반환하는데, 다시 indexing을 하는 경우 Error가 발생하는 것을 방지하기 위해 optional Chaining을 사용한다.
+
+data[-1]
+index가 음수인 경우 undefined를 반환한다. 따라서, data[-1][-1]은 undefined의 -1 index를 찾는 것이기 때문에 Error가 발생한다.
+
+결국, Error를 방지하기 위해서는 if문으로 보호해야 한다.
+
+```js
+if (data[-1]) {
+  data[-1][-1];
+}
+```
+
+이를 Optional Chaining을 활용하여 작성하면 다음과 같다.
+
+```js
+data[-1]?.[-1];
+```
+
+객체의 경우 `.`으로 접근하기 때문에 `?`만 추가하면 된다.
+
+```js
+const a = { b: [] };
+
+a.b[0]?.cdef.gh; // undefined
+```
+
+Nullish coalescing operator([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator))
 
 ### 000. _Notes_
 
@@ -2355,4 +2437,7 @@ www.latentflip.com/loupe
 2. `<tr>`, `<td>`의 개수가 고정되어 있는 경우에는 HTML 화면에서 미리 구현하는 것이 좋으나, 사용자의 선택에 따라서 개수를 다르게 구현할 것이므로, javascript에서 `document.createElement()`를 활용하는 것이 더 좋다.
 
 3. 항상 Data를 먼저 작성하고, 화면을 이에 맞게 변경해주는 것이 더 좋다.
+
+```
+
 ```
