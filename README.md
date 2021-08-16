@@ -2429,6 +2429,9 @@ a.b[0]?.cdef.gh; // undefined
 
 Nullish coalescing operator([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator))
 
+
+---
+
 ### 000. _Notes_
 
 1. 순서도의 절차에 맞는 함수를 우선 빈 함수로 구현하고 함수의 내용을 채워나가는 식으로 코드를 작성하는 것이 좋다.
@@ -2436,7 +2439,5 @@ Nullish coalescing operator([mdn](https://developer.mozilla.org/ko/docs/Web/Java
 2. `<tr>`, `<td>`의 개수가 고정되어 있는 경우에는 HTML 화면에서 미리 구현하는 것이 좋으나, 사용자의 선택에 따라서 개수를 다르게 구현할 것이므로, javascript에서 `document.createElement()`를 활용하는 것이 더 좋다.
 
 3. 항상 Data를 먼저 작성하고, 화면을 이에 맞게 변경해주는 것이 더 좋다.
-
-```
 
 ```
