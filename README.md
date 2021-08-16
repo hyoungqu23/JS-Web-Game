@@ -2403,8 +2403,7 @@ rowIndex, cellIndex를 활용
 
 객체나 배열에서 존재하지 않는 경우에 undefined를 반환하는데, 다시 indexing을 하는 경우 Error가 발생하는 것을 방지하기 위해 optional Chaining을 사용한다.
 
-data[-1]
-index가 음수인 경우 undefined를 반환한다. 따라서, data[-1][-1]은 undefined의 -1 index를 찾는 것이기 때문에 Error가 발생한다.
+`data[-1]`처럼 index가 음수인 경우 undefined를 반환한다. 따라서, `data[-1][-1]`은 undefined의 -1 index를 찾는 것이기 때문에 Error가 발생한다.
 
 결국, Error를 방지하기 위해서는 if문으로 보호해야 한다.
 
