@@ -2429,6 +2429,97 @@ a.b[0]?.cdef.gh; // undefined
 
 Nullish coalescing operator([mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator))
 
+#### 경계선 Click 시 발생하는 bug
+
+보통 개발자 모드에서만 볼 수 있는 bug이다.
+칸이 아닌 곳을 click하는 경우에, return하는 if문을 활용해 해결할 수 있다.
+
+#### 재귀 함수(recursive function)
+해당 칸을 열었을 때, 해당 칸의 값이 0인 경우에 인접한 칸을 열기 위해서는 `openAround()` 함수를 구현해야 한다.
+
+```js
+function openAround(rowIndex, cellIndex) {
+  const count = open(rowIndex, cellIndex);
+  if (count === 0) {
+    open(rowIndex - 1, cellIndex - 1);
+    open(rowIndex - 1, cellIndex);
+    open(rowIndex - 1, cellIndex + 1);
+    open(rowIndex, cellIndex - 1);
+    open(rowIndex, cellIndex + 1);
+    open(rowIndex + 1, cellIndex - 1);
+    open(rowIndex + 1, cellIndex);
+    open(rowIndex + 1, cellIndex + 1);
+  }
+}
+```
+다만, 이 경우 빈 칸을 click해 열었을 때, 근처 빈 칸을 함께 열어주는 기능을 구현하기 위해서는 자기 자신을 호출하는 함수를 재귀 함수(recursive function)를 활용해야 한다.
+
+```js
+function openAround(rowIndex, cellIndex) {
+  const count = open(rowIndex, cellIndex);
+  if (count === 0) {
+    openAround(rowIndex - 1, cellIndex - 1);
+    openAround(rowIndex - 1, cellIndex);
+    openAround(rowIndex - 1, cellIndex + 1);
+    openAround(rowIndex, cellIndex - 1);
+    openAround(rowIndex, cellIndex + 1);
+    openAround(rowIndex + 1, cellIndex - 1);
+    openAround(rowIndex + 1, cellIndex);
+    openAround(rowIndex + 1, cellIndex + 1);
+  }
+}
+```
+따라서, 빈 칸을 열었을 때, 인접 칸도 0이면 열리게 된다. 다만, 이때 `Maximum call stack size exceeded` Error가 발생한다. 이는 제한된 호출 스택(Call Stack)의 최대 크기를 초과하는 경우 발생하는데, 보통 재귀 함수에서 자주 발생한다.
+
+따라서 호출 스택의 크기를 확인해보면, 다음과 같은 재귀 함수 코드로 확인할 수 있다.
+
+```js
+let i = 0;
+function recurse() {
+  i++;
+  recurse();
+}
+
+try {
+  recurse();
+} catch (ex) {
+  alert('최대 크기는 ' + i + '\n  error: ' + ex);
+}
+```
+대략 Google Chrome 브라우저에서는 13948의 크기의 호출 스택을 활용하고 있음을 알 수 있다.
+
+이를 해결하기 위한 가장 간단한 방법은 '비동기 함수'를 활용하는 것이다. 즉, 재귀 함수인 `openAround()` 내부에서 가장 대표적인 '비동기 함수'인 `setTimeout()`의 시간을 `0ms`로 하여 즉시 실행될 수 있도록 활용하는 것이다.
+
+```js
+function openAround(rowIndex, cellIndex) {
+  setTimeout(() => {
+    const count = open(rowIndex, cellIndex);
+    if (count === 0) {
+      openAround(rowIndex - 1, cellIndex - 1);
+      openAround(rowIndex - 1, cellIndex);
+      openAround(rowIndex - 1, cellIndex + 1);
+      openAround(rowIndex, cellIndex - 1);
+      openAround(rowIndex, cellIndex + 1);
+      openAround(rowIndex + 1, cellIndex - 1);
+      openAround(rowIndex + 1, cellIndex);
+      openAround(rowIndex + 1, cellIndex + 1);
+    }
+  }, 0);
+}
+```
+이렇게 구현한 재귀 함수는 호출 스택에 `openAround()` 함수가 두 개 이상 쌓이지 않아 최대 크기를 초과하는 Error가 발생하지 않는다.
+
+다만, 열어야 할 칸이 많으면 브라우저가 느려지고, 멈추게 된다. 한 칸을 열 때마다 주변 8칸을 검사한 뒤 열고, 주변 8칸이 다시 주변 8칸을 검사한 뒤 열고 있기에 연산량이 많아졌기 때문이다.
+
+즉, 어떤 하나의 칸을 열고 인접 칸을 열면, 그 인접 칸의 인접 칸을 열게 될 때 처음 열었던 해당 칸이 인접 칸이 되어 열게 된다. 따라서 무한 반복에 빠지게 된다.
+
+따라서 한 번 열었던 칸은 검사와 인접 칸 열기에서 제외해야 한다.
+```js
+function open(rowIndex, cellIndex) {
+  if (data[rowIndex]?.[cellIndex] >= CODE.Opened) return;
+  ...
+}
+```
 
 ---
 
