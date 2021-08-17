@@ -1,9 +1,9 @@
 const $mineSweeperTbody = document.querySelector('#minesweeper__table tbody');
 const $mineSweeperResult = document.querySelector('#minesweeper__result');
 
-const row = 10;   // 줄
-const cell = 10;  // 칸
-const mine = 10;  // 지뢰 개수
+const row = 50;   // 줄
+const cell = 50;  // 칸
+const mine = 100;  // 지뢰 개수
 const CODE = {
   Opened: 0,      // 0 이상이면 열린 칸(주변 지뢰 개수를 표현)
   // 지뢰 없음
@@ -16,6 +16,7 @@ const CODE = {
   Mine: -6,
 }
 let data;
+let openCount;
 
 // 무작위로 칸을 선택하여, 지뢰 칸으로 설정하기(DATA 설정)
 function plantMine() {
@@ -102,6 +103,52 @@ function countMine(rowIndex, cellIndex) {
   return i;
 }
 
+// 해당 칸을 여는 함수
+function open(rowIndex, cellIndex) {
+  if (data[rowIndex]?.[cellIndex] >= CODE.Opened) return; // 한 번 연 칸은 다시 열지 않음
+
+  const target = $mineSweeperTbody.children[rowIndex].children[cellIndex];
+  if (!target) return;  // 칸 이외의 경계선, 외부 click 방지
+
+  const count = countMine(rowIndex, cellIndex);
+  target.textContent = count || '';
+  target.className = 'opened';
+  data[rowIndex][cellIndex] = count;
+
+  openCount++;
+  if (openCount === row + cell - mine) {
+    const time = (new Date() - startTime);
+    clearInterval(interval);
+    $mineSweeperTbody.removeEventListener('contextmenu', onRightClick);
+    $mineSweeperTbody.removeEventListener('click', onLeftClick);
+    setTimeout(() => {
+      alert(`승리! ${time}초가 걸렸습니다.`);
+    }, 0);
+  }
+
+  return count;
+}
+
+// 해당 칸의 값이 0인지 확인하는 함수
+function isNormal(cell) {
+  return cell === CODE.Normal;
+}
+
+// 해당 칸을 열고, 인접 칸이 비어있으면 여는 함수(재귀)
+function openAround(rowIndex, cellIndex) {
+  const count = open(rowIndex, cellIndex);
+  if (count === 0) {
+    isNormal(data[rowIndex - 1]?.[cellIndex -1]) && openAround(rowIndex - 1, cellIndex - 1);
+    isNormal(data[rowIndex - 1]?.[cellIndex]) && openAround(rowIndex - 1, cellIndex);
+    isNormal(data[rowIndex - 1]?.[cellIndex + 1]) && openAround(rowIndex - 1, cellIndex + 1);
+    isNormal(data[rowIndex][cellIndex - 1]) && openAround(rowIndex, cellIndex - 1);
+    isNormal(data[rowIndex][cellIndex + 1]) && openAround(rowIndex, cellIndex + 1);
+    isNormal(data[rowIndex + 1]?.[cellIndex -1]) && openAround(rowIndex + 1, cellIndex - 1);
+    isNormal(data[rowIndex + 1]?.[cellIndex]) && openAround(rowIndex + 1, cellIndex);
+    isNormal(data[rowIndex + 1]?.[cellIndex + 1]) && openAround(rowIndex + 1, cellIndex + 1);
+  }
+}
+
 function onLeftClick(event) {
   const target = event.target;  // event.target: <td>
   const rowIndex = target.parentNode.rowIndex;  // target.parentNode: <tr>
@@ -109,11 +156,12 @@ function onLeftClick(event) {
   const cellData = data[rowIndex][cellIndex];
 
   if (cellData === CODE.Normal) {   // 일반 닫힌 칸인 경우
-    const count = countMine(rowIndex, cellIndex);
-    target.textContent = count || ''; // count가 존재하지 않으면 ''을 입력하는데, count = 0 인 경우에 falsy value 이므로, '' 가 입력된다.
-    // 만약 0도 작성하고, null, undefined인 경우에만 공백을 입력하고자 하면, nullish coalescing을 활용해 `??` 로 작성하면 된다.
-    target.className = 'opened';
-    data[rowIndex][cellIndex] = count;
+    openAround(rowIndex, cellIndex);
+    // const count = countMine(rowIndex, cellIndex);
+    // target.textContent = count || ''; // count가 존재하지 않으면 ''을 입력하는데, count = 0 인 경우에 falsy value 이므로, '' 가 입력된다.
+    // // 만약 0도 작성하고, null, undefined인 경우에만 공백을 입력하고자 하면, nullish coalescing을 활용해 `??` 로 작성하면 된다.
+    // target.className = 'opened';
+    // data[rowIndex][cellIndex] = count;
   } else if (cellData === CODE.Mine) {  // 지뢰 칸인 경우
     // 펑
     target.textContent = '펑';
