@@ -3,12 +3,12 @@
 <head>
   <title>Web Games</title>
 
-  <!-- Meta -->
+  <!-- ========== Meta ========== -->
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Hyoungmin Lee">
-  <meta name="description" content="Vanila JS Web Game Making">
+  <meta name="description" content="Vanilla JS Web Game Making">
 
   <!-- ========== Font ========== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,6 @@
   <link rel="stylesheet" href="./src/main.css">
 
   <!-- ========== JavaScript ========== -->
-  <!-- <script src="./script/timer.js" defer></script> -->
   <script src="./script/word-relay.js" defer></script>
   <script src="./script/calculator.js" defer></script>
   <script src="./script/number-baseball.js" defer></script>
@@ -72,8 +71,8 @@
     <section class="webgame" id="calculator">
       <h1>Calculator</h1>
       <div class="calculator">
-        <input id="operator" readonly>
-        <input id="result" type="number" readonly>
+        <input id="operator" class="ipt" readonly>
+        <input id="result" class="ipt" type="number" readonly>
         <div class="row">
           <button id="num-7">7</button>
           <button id="num-8">8</button>
@@ -204,6 +203,7 @@
 
     <!-- 010. Mine Sweeper -->
     <section class="webgame" id="minesweeper">
+      <div id="minesweeper__timer"></div>
       <table id="minesweeper__table">
         <tbody></tbody>
       </table>

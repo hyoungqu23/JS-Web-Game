@@ -1,9 +1,10 @@
+const $mineSweeperTimer = document.querySelector('#minesweeper__timer');
 const $mineSweeperTbody = document.querySelector('#minesweeper__table tbody');
 const $mineSweeperResult = document.querySelector('#minesweeper__result');
 
-const row = 50;   // 줄
-const cell = 50;  // 칸
-const mine = 100;  // 지뢰 개수
+const row = 10;   // 줄
+const cell = 10;  // 칸
+const mine = 10;  // 지뢰 개수
 const CODE = {
   Opened: 0,      // 0 이상이면 열린 칸(주변 지뢰 개수를 표현)
   // 지뢰 없음
@@ -16,7 +17,13 @@ const CODE = {
   Mine: -6,
 }
 let data;
-let openCount;
+let openCount = 0;
+
+let mineSweeperStartTime = new Date();
+const interval = setInterval(() => {
+  const time = Math.floor((new Date() - mineSweeperStartTime) / 1000);
+  $mineSweeperTimer.textContent = `${time}초`;
+}, 1000);
 
 // 무작위로 칸을 선택하여, 지뢰 칸으로 설정하기(DATA 설정)
 function plantMine() {
@@ -105,10 +112,10 @@ function countMine(rowIndex, cellIndex) {
 
 // 해당 칸을 여는 함수
 function open(rowIndex, cellIndex) {
-  if (data[rowIndex]?.[cellIndex] >= CODE.Opened) return; // 한 번 연 칸은 다시 열지 않음
+  if (data[rowIndex]?.[cellIndex] >= CODE.Opened) returnS; // 한 번 연 칸은 다시 열지 않음(OC로 rowIndex가 존재하지 않는 경우를 보호)
 
-  const target = $mineSweeperTbody.children[rowIndex].children[cellIndex];
-  if (!target) return;  // 칸 이외의 경계선, 외부 click 방지
+  const target = $mineSweeperTbody.children[rowIndex]?.children[cellIndex]; // (OC로 rowIndex가 존재하지 않는 경우를 보호)
+  if (!target) { return; }  // 칸 이외의 경계선, 외부 click 방지
 
   const count = countMine(rowIndex, cellIndex);
   target.textContent = count || '';
@@ -116,8 +123,11 @@ function open(rowIndex, cellIndex) {
   data[rowIndex][cellIndex] = count;
 
   openCount++;
+  console.log(openCount);
+  
+  // 승리 확인하기
   if (openCount === row + cell - mine) {
-    const time = (new Date() - startTime);
+    const time = (new Date() - mineSweeperStartTime);
     clearInterval(interval);
     $mineSweeperTbody.removeEventListener('contextmenu', onRightClick);
     $mineSweeperTbody.removeEventListener('click', onLeftClick);
