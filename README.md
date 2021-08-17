@@ -2520,10 +2520,19 @@ function open(rowIndex, cellIndex) {
   ...
 }
 ```
+다만, `Uncaught TypeError: Cannot read property '1' of undefined` Error가 난 위치 앞의 데이터가 `undefined`인 경우에 발생하는 Error이므로, Optional Chaining으로 보호해주어야 한다.
+
+---
+### 005. 승리 message && 게임 시간 보여주기
+
+`openCount` 변수로 열린 칸의 개수를 세어 `row * cell - mine`개, 즉 총 칸 개수에서 지뢰를 제외한 모든 칸을 열면 게임을 승리할 수 있도록 한다.
+
+
+
 
 ---
 
-### 000. _Notes_
+### 007. _Notes_
 
 1. 순서도의 절차에 맞는 함수를 우선 빈 함수로 구현하고 함수의 내용을 채워나가는 식으로 코드를 작성하는 것이 좋다.
 
