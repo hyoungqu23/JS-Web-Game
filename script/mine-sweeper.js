@@ -1,10 +1,11 @@
+const $mineSweeperForm = document.querySelector('#minesweeper__form');
 const $mineSweeperTimer = document.querySelector('#minesweeper__timer');
 const $mineSweeperTbody = document.querySelector('#minesweeper__table tbody');
 const $mineSweeperResult = document.querySelector('#minesweeper__result');
 
-const row = 10;   // 줄
-const cell = 10;  // 칸
-const mine = 10;  // 지뢰 개수
+let row   // 줄
+let cell  // 칸
+let mine  // 지뢰 개수
 const CODE = {
   Opened: 0,      // 0 이상이면 열린 칸(주변 지뢰 개수를 표현)
   // 지뢰 없음
@@ -17,13 +18,32 @@ const CODE = {
   Mine: -6,
 }
 let data;
-let openCount = 0;
+let openCount;
 
-let mineSweeperStartTime = new Date();
-const interval = setInterval(() => {
-  const time = Math.floor((new Date() - mineSweeperStartTime) / 1000);
-  $mineSweeperTimer.textContent = `${time}초`;
-}, 1000);
+const dev = true;
+
+// 게임 시간 타이머
+let mineSweeperStartTime;
+let interval
+
+// row, cell, mine 개수 입력 받기
+$mineSweeperForm.addEventListener('submit', onSubmit);
+
+function onSubmit(event) {
+  event.preventDefault();
+  row = parseInt(event.target.minesweeper__row.value);
+  cell = parseInt(event.target.minesweeper__cell.value);
+  mine = parseInt(event.target.minesweeper__mine.value);
+  openCount = 0;
+  $mineSweeperTbody.innerHTML = '';
+  clearInterval(interval);
+  drawTable();
+  mineSweeperStartTime = new Date();
+  interval = setInterval(() => {
+    const time = Math.floor((new Date() - mineSweeperStartTime) / 1000);
+    $mineSweeperTimer.textContent = `${time}초`;
+  }, 1000);
+}
 
 // 무작위로 칸을 선택하여, 지뢰 칸으로 설정하기(DATA 설정)
 function plantMine() {
@@ -79,7 +99,7 @@ function onRightClick(event) {
   } else if (cellData === CODE.Flag_Mine) { // 칸에 깃발 표시가 있는가?
     data[rowIndex][cellIndex] = CODE.Mine;
     target.className = "";
-    target.textContent = "X";
+    dev && (target.textContent = "X");
   } else if (cellData === CODE.Normal) {  // 지뢰가 없는 닫힌 칸
     data[rowIndex][cellIndex] = CODE.Question;
     target.className = "question";
@@ -126,14 +146,14 @@ function open(rowIndex, cellIndex) {
   console.log(openCount);
   
   // 승리 확인하기
-  if (openCount === row + cell - mine) {
-    const time = (new Date() - mineSweeperStartTime);
+  if (openCount === row * cell - mine) {
+    const time = (new Date() - mineSweeperStartTime) / 1000;
     clearInterval(interval);
     $mineSweeperTbody.removeEventListener('contextmenu', onRightClick);
     $mineSweeperTbody.removeEventListener('click', onLeftClick);
     setTimeout(() => {
       alert(`승리! ${time}초가 걸렸습니다.`);
-    }, 0);
+    }, 500);
   }
 
   return count;
@@ -176,8 +196,12 @@ function onLeftClick(event) {
     // 펑
     target.textContent = '펑';
     target.className = 'opened';
+    clearInterval(interval);
     $mineSweeperTbody.removeEventListener('contextmenu', onRightClick);
     $mineSweeperTbody.removeEventListener('click', onLeftClick);
+    setTimeout(() => {
+      alert('실패!');
+    }, 500);
   }
   // 물음표, 깃발인 경우는 아무 동작도 안함.
 }
@@ -191,7 +215,7 @@ function drawTable() {
       const $mineSweeperTd = document.createElement('td');
       $mineSweeperTr.append($mineSweeperTd);
       if (cell === CODE.Mine) {
-        $mineSweeperTd.textContent = 'X'; //  개발 편의를 위해
+        dev && ($mineSweeperTd.textContent = 'X'); //  개발 편의를 위해
       }
     });
     $mineSweeperTbody.append($mineSweeperTr);
@@ -199,5 +223,3 @@ function drawTable() {
     $mineSweeperTbody.addEventListener('click', onLeftClick);  // Event Bubbling
   });
 }
-
-drawTable();

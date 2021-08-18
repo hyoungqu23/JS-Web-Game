@@ -202,7 +202,13 @@
     </section>
 
     <!-- 010. Mine Sweeper -->
-    <section class="webgame" id="minesweeper">
+    <section class="webgame" id="minesweeper"> 
+      <form id="minesweeper__form" action=""> 
+        <input type="text" id="minesweeper__row" class='ipt' size="5" placeholder="row">
+        <input type="text" id="minesweeper__cell" class='ipt' size="5" placeholder="column">
+        <input type="text" id="minesweeper__mine" class='ipt' size="5" placeholder="mine">
+        <button class="btn">Start!</button>
+      </form>
       <div id="minesweeper__timer"></div>
       <table id="minesweeper__table">
         <tbody></tbody>
