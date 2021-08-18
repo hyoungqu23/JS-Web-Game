@@ -20,7 +20,7 @@ const CODE = {
 let data;
 let openCount;
 
-const dev = true;
+const dev = false;
 
 // 게임 시간 타이머
 let mineSweeperStartTime;
@@ -179,11 +179,57 @@ function openAround(rowIndex, cellIndex) {
   }
 }
 
+// 첫 click이 지뢰인 경우 방지하기
+let normalCellFound = false;
+let searched;
+let firstClick = true;
+
+function transferMine(rowIndex, cellIndex) {
+  if (normalCellFound) return;    // 이미 빈 칸인 경우 종료
+  if (rowIndex < 0 || rowIndex >= row || cellIndex < 0 || cellIndex >= cell) return;  // OC를 대신하여 undefined 이면 종료
+  if (searched[rowIndex][cellIndex]) return;    // 이미 찾은 칸인 경우 종료
+
+  if (isNormal(data[rowIndex]?.[cellIndex])) {  // 빈 칸인 경우
+    normalCellFound = true;
+    data[rowIndex][cellIndex] = CODE.Mine;
+  } else {
+    searched[rowIndex][cellIndex] = true;
+    transferMine(rowIndex - 1, cellIndex - 1);
+    transferMine(rowIndex - 1, cellIndex);
+    transferMine(rowIndex - 1, cellIndex + 1);
+    transferMine(rowIndex, cellIndex - 1);
+    transferMine(rowIndex, cellIndex + 1);
+    transferMine(rowIndex + 1, cellIndex - 1);
+    transferMine(rowIndex + 1, cellIndex);
+    transferMine(rowIndex + 1, cellIndex + 1);
+  }
+}
+
+function showMines() {
+  const mines = [CODE.Mine, CODE.Question_Mine, CODE.Flag_Mine];
+  data.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      if (mines.includes(cell)) {
+        $mineSweeperTbody.children[rowIndex].children[cellIndex].textContent = 'X';
+      }
+    })
+  })
+}
+
 function onLeftClick(event) {
   const target = event.target;  // event.target: <td>
   const rowIndex = target.parentNode.rowIndex;  // target.parentNode: <tr>
   const cellIndex = target.cellIndex;
-  const cellData = data[rowIndex][cellIndex];
+  let cellData = data[rowIndex][cellIndex];
+  if (firstClick) {
+    firstClick = false;
+    searched = Array(row).fill().map(() => []);
+    if (cellData === CODE.Mine) {                // 첫 click이 지뢰이면, 
+      transferMine(rowIndex, cellIndex);         // 지뢰를 옮기기
+      data[rowIndex][cellIndex] = CODE.Normal;   // click한 칸을 비우기
+      cellData = CODE.Normal;                    // click한 칸을 비우기
+    }
+  }
 
   if (cellData === CODE.Normal) {   // 일반 닫힌 칸인 경우
     openAround(rowIndex, cellIndex);
@@ -194,6 +240,7 @@ function onLeftClick(event) {
     // data[rowIndex][cellIndex] = count;
   } else if (cellData === CODE.Mine) {  // 지뢰 칸인 경우
     // 펑
+    showMines();
     target.textContent = '펑';
     target.className = 'opened';
     clearInterval(interval);
