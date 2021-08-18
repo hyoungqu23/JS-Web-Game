@@ -2525,12 +2525,55 @@ function open(rowIndex, cellIndex) {
 ---
 ### 005. 승리 message && 게임 시간 보여주기
 
-`openCount` 변수로 열린 칸의 개수를 세어 `row * cell - mine`개, 즉 총 칸 개수에서 지뢰를 제외한 모든 칸을 열면 게임을 승리할 수 있도록 한다.
+`openCount` 변수로 열린 칸의 개수를 세어 `row * cell - mine`개, 즉 총 칸 개수에서 지뢰를 제외한 모든 칸을 열면 게임을 승리할 수 있도록 한다. 승리의 경우, 게임 시간 타이머를 멈추고, EventListener를 제거해야 하고, 승리 message를 띄워 주어야 한다.
 
+```js
+if (openCount === row * cell - mine) {
+  // 게임 소요 시간 기록하기
+  const time = (new Date() - mineSweeperStartTime) / 1000;
 
+  // 게임 시간 타이머 멈추기
+  clearInterval(interval);
 
+  // EventListener 제거하기
+  $mineSweeperTbody.removeEventListener('contextmenu', onRightClick);
+  $mineSweeperTbody.removeEventListener('click', onLeftClick);
+
+  // 승리 message 띄우기
+  setTimeout(() => {
+    alert(`승리! ${time}초가 걸렸습니다.`);
+  }, 0);
+}
+```
+
+이때, 화면이 바뀔 수 있는 시간을 주어야 하기 때문에, `setTimeout()` 함수를 활용해 승리 message를 `alert()` 대화 상자로 표시한다.
 
 ---
+### 006. row, cell, mine 개수 입력 받기
+`<form>`의 `<input>`을 활용해 사용자가 원하는 개수를 입력받고, `<button>`으로 시작하게끔 만들 수 있다.
+
+`<form>`이기 때문에 기본 동작을 막아주어야 하고, 각 value 값을 number 형태로 형 변환해야 한다.
+
+또한, 새로운 게임을 시작할 때 기존 게임을 삭제하여야 하므로, `innerHTML`으로 내부 HTML 코드를 삭제해야 한다.
+
+```js
+$mineSweeperForm.addEventListener('submit', onSubmit);
+
+function onSubmit(event) {
+  event.preventDefault();
+  row = parseInt(event.target.minesweeper__row.value);
+  cell = parseInt(event.target.minesweeper__cell.value);
+  mine = parseInt(event.target.minesweeper__mine.value);
+  openCount = 0;
+  $mineSweeperTbody.innerHTML = '';
+  drawTable();
+  mineSweeperStartTime = new Date();
+  interval = setInterval(() => {
+    const time = Math.floor((new Date() - mineSweeperStartTime) / 1000);
+    $mineSweeperTimer.textContent = `${time}초`;
+  }, 1000);
+}
+```
 
 ### 007. _Notes_
 
@@ -2540,4 +2583,7 @@ function open(rowIndex, cellIndex) {
 
 3. 항상 Data를 먼저 작성하고, 화면을 이에 맞게 변경해주는 것이 더 좋다.
 
+4. 개발자 모드를 구현하기 위해서 `dev` flag 변수를 활용한다.
+
+5. 정리할 것: contextmenu Event, OC, 재귀 함수, nullish colearishing
 ```
