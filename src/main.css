@@ -169,3 +169,31 @@ td.flag {
 td.question {
   background: rgb(255, 165, 0);
 }
+
+/* 2048 */
+
+#2048__table {
+  border-collapse: collapse;
+  user-select: none;  /* 블록 설정 방지 */
+}
+
+#2048__table td {
+  border: 10px solid #bbada0;
+  width: 116px; height: 128px;
+  font-size: 50px; font-weight: bold;
+  text-align: center;
+}
+
+#2048__score { user-select: none; }
+
+.color-2 { background-color: #eee4da; color: #776e65;}
+.color-4 { background-color: #eee1c9; color: #776e65;}
+.color-8 { background-color: #f3b27a; color: #ffffff;}
+.color-16 { background-color: #f69664; color: #ffffff;}
+.color-32 { background-color: #f77c5f; color: #ffffff;}
+.color-64 { background-color: #f75f3b; color: #ffffff;}
+.color-128 { background-color: #edd073; color: #776e65;}
+.color-256 { background-color: #edcc62; color: #776e65;}
+.color-512 { background-color: #edc950; color: #776e65;}
+.color-1024 { background-color: #edc53f; color: #776e65;}
+.color-2048 { background-color: #edc22e; color: #776e65;}

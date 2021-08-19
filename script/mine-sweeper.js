@@ -220,14 +220,14 @@ function onLeftClick(event) {
   const target = event.target;  // event.target: <td>
   const rowIndex = target.parentNode.rowIndex;  // target.parentNode: <tr>
   const cellIndex = target.cellIndex;
-  let cellData = data[rowIndex][cellIndex];
+  let cellData = data[rowIndex][cellIndex]; // 원시값을 cellData에 복사하기
   if (firstClick) {
     firstClick = false;
     searched = Array(row).fill().map(() => []);
     if (cellData === CODE.Mine) {                // 첫 click이 지뢰이면, 
       transferMine(rowIndex, cellIndex);         // 지뢰를 옮기기
-      data[rowIndex][cellIndex] = CODE.Normal;   // click한 칸을 비우기
-      cellData = CODE.Normal;                    // click한 칸을 비우기
+      data[rowIndex][cellIndex] = CODE.Normal;   // click한 칸을 비우기(해당 칸의 원시값 변경하기)
+      cellData = CODE.Normal;                    // click한 칸을 비우기(그 원시값과 동일한 값을 cellData 변수에 대입하기)
     }
   }
 
