@@ -2597,4 +2597,30 @@ function onSubmit(event) {
 4. 개발자 모드를 구현하기 위해서 `dev` flag 변수를 활용한다.
 
 5. 정리할 것: contextmenu Event, OC, 재귀 함수, nullish colearishing
-```
+
+6. 추가 기능 구현: Left + Right click 동시 -> 100% 확실한 것 모두 열기, Left Double click -> 기능 등등
+
+---
+---
+
+## Chapter 13. 2048
+
+### 000. FlowChart
+
+<img src='./img/flowChart/FlowChart_2048.png' alt='FlowChart'>
+
+---
+
+### 001. Rules
+
+1. 4 X 4 표를 만든다.
+2. 매 순서마다 임의의 위치에 숫자 2가 생성된다.
+3. 매 순서마다 user가 한 번씩 마우스 드래그 또는 키보드 화살표 클릭을 하여 방향을 지정한다.
+4. 해당 방향으로 숫자들이 기울어진다.
+5. 같은 숫자가 인접해 있는 경우에 하나로 합쳐지면서 X2 가 된다.
+6. 2 ~ 6을 반복해 2048을 만들면 승리한다.
+7. 가장 빠르게 2048을 완성한 사람 or 가장 높은 점수를 가지고 2048을 완성한 사람이 최종 승리자가 된다.(게임 정책에 따라 달라짐)
+
+---
+
+### 002. user가 선택한 방향 판단하기
