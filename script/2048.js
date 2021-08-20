@@ -1,5 +1,6 @@
 const $2048Table = document. getElementById('2048__table');
 const $2048Score = document.getElementById('2048__score');
+const $2048Section = document.querySelector('#game__2048');
 
 let tableData = [];
 
@@ -59,3 +60,43 @@ function draw2048Table() {
 }
 
 start2048();
+
+function moveCells(direction) {
+
+}
+
+// keyboard Event
+window.addEventListener('keyup', (event) => {
+  if (event.key === 'ArrowUp') {
+    moveCells('up');
+  } else if (event.key === 'ArrowDown') {
+    moveCells('down');
+  } else if (event.key === 'ArrowLeft') {
+    moveCells('left');
+  } else if (event.key === 'ArrowRight') {
+    moveCells('right');
+  }
+});
+
+// mouse Event
+let startCoord;
+window.addEventListener('mousedown', (event) => {
+  startCoord = [event.clientX, event.clientY];
+});
+
+window.addEventListener('mouseup', (event) => {
+  const endCoord = [event.clientX, event.clientY];
+  const diffX = endCoord[0] - startCoord[0];
+  const diffY = endCoord[1] - startCoord[1];
+
+  // 기준점에 따른 좌표 계산하기
+  if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
+    moveCells('left');
+  } else if (diffY > 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+    moveCells('down');
+  } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
+    moveCells('right');
+  } else if (diffX < 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+    moveCells('up');
+  }
+});
