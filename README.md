@@ -2648,6 +2648,23 @@ function onSubmit(event) {
 ---
 ### 003. 이동 방향 판단하기
 
+keyboard Event로는 눌렀을 때 발생하는 `'keydown'`, 눌렀다가 놓았을 때 발생하는 `'keyup'`, 계속 누르고 있을 때 발생하는 `'keypress'` 등이 있다.
+
+mouse Event로는 클릭할 때 발생하는 `'mousedown'`, 클릭했다가 해제했을 때 발생하는 `'mouseup'`, 움직였을 때 발생하는 `'mousemove'` 등이 있다.([mdn 참고](https://developer.mozilla.org/ko/docs/Web/Events))
+
+keyboard Event의 경우, `event.key` property를 활용해 어떤 key(예: `ArrowUp`, `ArrowLeft` 등)를 눌렀는 지 알 수 있고, `event.ctrlKey`, `event.altKey`, `event.shiftKey`로 다른 key와 함께 누르고 있는지 여부도 파악할 수 있다.
+
+다만, mouse Event의 경우, 명확한 기준을 설정하고, 이에 따라 상하좌우 이동을 파악해야 한다. 따라서 45도 대각선이 교차하는 지점을 기준으로 설정하고, 이에 따라 상하좌우를 결정한다.
+
+<그림>
+
+mouse Event의 property에는 여러 종류의 좌표 property가 있다.
+- `clientX`, `clientY`: 현재 브라우저 page 내에서의 좌표
+- `pageX`, `pageY`: 현재 브라우저 page 내에서의 좌표(*scroll 포함)
+- `offsetX`, `offsetY`: 이벤트를 연결한 대상을 기준으로 하는 좌표
+- `screenX`, `screenY`: 모니터를 기준으로 하는 좌표
+- `movementX`, `movementY`: 지난 `mousemove` Event와 비교하여 얼마나 mouse를 움직였는지를 보여주는 좌표
+
 ### _Notes_
 1. function 키워드를 활용해 작성한 함수는 순서에 상관없이 호출할 수 있지만, arrow function인 경우에는 불가능하다.
 
