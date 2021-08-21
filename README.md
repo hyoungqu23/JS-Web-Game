@@ -2665,6 +2665,11 @@ mouse Event의 property에는 여러 종류의 좌표 property가 있다.
 - `screenX`, `screenY`: 모니터를 기준으로 하는 좌표
 - `movementX`, `movementY`: 지난 `mousemove` Event와 비교하여 얼마나 mouse를 움직였는지를 보여주는 좌표
 
+### 숫자 합치기
+
+이벤트가 왼쪽으로 드래그한 경우 혹은 키보드 왼쪽 화살표를 입력한 경우에는 왼쪽 정렬과 왼쪽으로 숫자를 합치면 된다.
+
+
 ### _Notes_
 1. function 키워드를 활용해 작성한 함수는 순서에 상관없이 호출할 수 있지만, arrow function인 경우에는 불가능하다.
 
