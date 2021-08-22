@@ -2665,9 +2665,11 @@ mouse Event의 property에는 여러 종류의 좌표 property가 있다.
 - `screenX`, `screenY`: 모니터를 기준으로 하는 좌표
 - `movementX`, `movementY`: 지난 `mousemove` Event와 비교하여 얼마나 mouse를 움직였는지를 보여주는 좌표
 
-### 숫자 합치기
+### 003. 숫자 합치기
 
 이벤트가 왼쪽으로 드래그한 경우 혹은 키보드 왼쪽 화살표를 입력한 경우에는 왼쪽 정렬과 왼쪽으로 숫자를 합치면 된다.
+
+case를 작성할 때 중괄호가 꼭 필요한 것은 아니지만, case 내부에서 const나 let을 사용할 때 중괄호를 넣어 블록 스코프를 설정해 하나의 변수를 활용할 수 있다. case 'left' 말고도 'right', 'up', 'down'이 추가되고 그 안에도 newData 변수가 선언되기에 case에 중괄호가 없다면 같은 이름의 변수들이 같은 블록 내에 선언되는 셈이니 에러가 발생하게 된다.
 
 
 ### _Notes_
