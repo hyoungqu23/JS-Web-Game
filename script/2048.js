@@ -79,12 +79,75 @@ function moveCells(direction) {
         });
       });
       break;
-    case 'right':
+    case 'right': {
+      const newData = [[], [], [], []];
+      data.forEach((rowData, i) => {
+        rowData.forEach((cellData, j) => {
+          if (rowData[3 - j]) {
+            const currentRow = newData[i]
+            const prevData = currentRow[currentRow.length - 1];
+            if (prevData === rowData[3 - j]) {
+              currentRow[currentRow.length - 1] *= -2;
+            } else {
+              newData[i].push(rowData[3 - j]);
+            }
+          }
+        });
+      });
+      console.log(newData);
+      [1, 2, 3, 4].forEach((rowData, i) => {
+        [1, 2, 3, 4].forEach((cellData, j) => {
+          data[i][3 - j] = Math.abs(newData[i][j]) || 0;
+        });
+      });
       break;
-    case 'up':
+    }
+    case 'up': {
+      const newData = [[], [], [], []];
+      data.forEach((rowData, i) => {
+        rowData.forEach((cellData, j) => {
+          if (cellData) {
+            const currentRow = newData[j]
+            const prevData = currentRow[currentRow.length - 1];
+            if (prevData === cellData) {
+              currentRow[currentRow.length - 1] *= -2;
+            } else {
+              newData[j].push(cellData);
+            }
+          }
+        });
+      });
+      console.log(newData);
+      [1, 2, 3, 4].forEach((cellData, i) => {
+        [1, 2, 3, 4].forEach((rowData, j) => {
+          data[j][i] = Math.abs(newData[i][j]) || 0;
+        });
+      });
       break;
-    case 'down':
+    }
+    case 'down': {
+      const newData = [[], [], [], []];
+      data.forEach((rowData, i) => {
+        rowData.forEach((cellData, j) => {
+          if (data[3 - i][j]) {
+            const currentRow = newData[j];
+            const prevData = currentRow[currentRow.length - 1];
+            if (prevData === data[3 - i][j]) {
+              currentRow[currentRow.length - 1] *= -2;
+            } else {
+              newData[j].push(data[3 - i][j]);
+            }
+          }
+        });
+      });
+      console.log(newData);
+      [1, 2, 3, 4].forEach((cellData, i) => {
+        [1, 2, 3, 4].forEach((rowData, j) => {
+          data[3 - j][i] = Math.abs(newData[i][j]) || 0;
+        });
+      });
       break;
+    }
   }
   draw();
 }
