@@ -205,7 +205,6 @@ function moveCells(direction) {
     }
   }
 
-
   // 승패 구현하기
   if (tableData.flat().includes(2048)) {    // 2048을 포함하고 있다면,
     draw2048Table();

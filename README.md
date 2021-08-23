@@ -2756,3 +2756,25 @@ tableData = [
 4. 가장 우선시되어야 할 것은 설계. 설계 이후에 코드를 어떻게든 만들고, 이를 나중에 Refactoring하는 순서로 공부하자.
    
 5. documentFragment, keyboard Event, mouse Event
+
+## Chapter 14. Whac-A-Mole
+
+### 000. FlowChart
+
+<img src='./img/flowChart/FlowChart_Whac-A-Mole.png' alt='FlowChart'>
+
+---
+
+### 001. Rules
+
+1. Start 버튼을 누르면 게임이 시작되고 60초 타이머가 시작된다.
+2. 9개 구멍에서 무작위로 두더지가 나온다.
+3. 두더지를 눌러서 두더지 img가 변경된다.(점수 + 1)
+4. 일정 시간이 지난 후 자동으로 두더지가 들어간다.
+5. 무작위로 폭탄이 나온다.
+5. 폭탄을 누르면 터진 폭탄으로 img가 변경되고 Life가 차감된다.
+6. 모든 Life가 차감되면 종료된다.
+7. 게임 진행 시간, 점수를 보여준다.
+
+---
+### 002. 
