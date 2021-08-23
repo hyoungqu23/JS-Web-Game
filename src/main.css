@@ -149,7 +149,7 @@ section.webgame {
   border-collapse: collapse;
 }
 
-td {
+#minesweeper__table td {
   border: 1px solid rgb(187, 187, 187);
   text-align: center;
   line-height: 2px;
@@ -158,33 +158,35 @@ td {
   background: rgb(136, 136, 136);
 }
 
-td.opened {
+#minesweeper__table td.opened {
   background: rgb(255, 255, 255);
 }
 
-td.flag {
+#minesweeper__table td.flag {
   background: rgb(255, 0, 0);
 }
 
-td.question {
+#minesweeper__table td.question {
   background: rgb(255, 165, 0);
 }
 
 /* 2048 */
 
-#2048__table {
+#game2048__table {
   border-collapse: collapse;
   user-select: none;  /* 블록 설정 방지 */
 }
 
-#2048__table td {
+#game2048__table td {
   border: 10px solid #bbada0;
-  width: 116px; height: 128px;
-  font-size: 50px; font-weight: bold;
+  width: 150px;
+  height: 150px;
+  font-size: 50px;
+  font-weight: bold;
   text-align: center;
 }
 
-#2048__score { user-select: none; }
+#game2048__score { user-select: none; }
 
 .color-2 { background-color: #eee4da; color: #776e65;}
 .color-4 { background-color: #eee1c9; color: #776e65;}
