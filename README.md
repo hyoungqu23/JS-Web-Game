@@ -2777,4 +2777,137 @@ tableData = [
 7. 게임 진행 시간, 점수를 보여준다.
 
 ---
-### 002. 
+### 002. 두더지/폭탄 움직이기
+
+우선, HTML, CSS를 활용해 `hidden` 쿨래스를 추가(`classList.add()`)하면 구멍 속으로 사라지고, 해당 클래스를 삭제(`classList.remove()`)하면 나타나게끔 만들 수 있다. 기본적으로 CSS에서 transition을 1초로 설정했기 때문에, 두더지가 나타나고, 사라지는 과정이 1초씩 걸려 총 2초가 걸리게 된다.
+
+이후 `tick()` 함수를 활용해, 모든 두더지를 나타나게 했다가, 1초 후 사라지게 하면 다음과 같다.
+
+```js
+function tick() {
+  holes.forEach((hole, index) => {  // (0, 0)
+    const $gopher = $$WAMCells[index].querySelector('.WAM-gopher');
+    holes[index] = setTimeout(() => { // setTimeout의 ID를 holes 배열의 각 요소에 삽입한다.
+      $gopher.classList.add('hidden');
+      holes[index] = 0;
+    }, 1000);
+    $gopher.classList.remove('hidden');   // setTimeout보다 먼저 실행된다.
+  })
+}
+```
+
+이때 `setTimeout()`의 `return` 값은 해당 `setTimeout()` Timer의 ID 값(양수 값)인데, 이를 `holes` 배열의 각 요소에 삽입하여 이후에 Timer를 취소할 때 사용할 수 있다. 또한, Timer가 등록되어 있으면, `holes` 배열에 `0`이 아닌 값이 삽입되고, `0`이 있는 경우에 해당 칸에 두더지의 존재 여부를 파악할 수 있는 기준이 된다.
+
+#### 비동기 처리하기
+
+비동기로 설정한 `setTimeout()`과 `setInterval()`에 의해 1초마다 `remove()`와 `add()`를 반복해야 하는데, 그렇지 못하는 문제가 발생한다.
+
+즉, `remove()`한 경우 `$gopher`의 `classList`가 `DOMTokenList ["WAM-gopher", value: "WAM-gopher"]`여야 하고, 다시 `add()`한 경우 `$gopher`의 `classList`가 `DOMTokenList ["WAM-gopher", "hidden", value: "WAM-gopher hidden"]`가 되어야 한다.
+
+하지만, `setInterval()`의 시간을 1초로 설정하는 경우에는 `remove()`와 `add()`가 동시에 이루어져 여전히 `hidden` 클래스가 남아있기 때문에 Error가 발생한다.
+
+매 초마다, `setInterval()`의 콜백 함수(callback Function)인 `tick`이 `remove()`한 이후 즉시 `setTimeout()`의 콜백 함수(callback Function)인 `add()`가 이루어지기 때문에 `hidden` 클래스가 제거되자마자 추가되는 문제가 발생한다.
+
+```js
+if (hole) return;
+```
+
+이를 통해 Timer가 존재하는 경우(setTimeout()의 ID가 존재하는 경우)를 구분하여 이 경우에는 `return`할 수 있도록 하면, 1초마다 interval을 순회하면서 Timer가 없는 경우에만 setTimeout을 실행하고, Timer가 있는 경우에는 동작하지 않게 만들어 문제를 해결할 수 있다.
+
+#### 두더지와 폭탄 결정하기
+
+두더지, 폭탄, 빈 칸은 비율로 설정하여 활용한다.
+
+```js
+let gopherPercent = 0.3;
+let bombPercent = 0.5;
+```
+
+if 구문을 누적된 비율을 분기할 것이기 때문에, 폭탄이 20% 확률로 나오므로 `bombPercent`는 `gopherPercent + 20%`인 `0.5`가 된다.
+
+#### 두더지 잡기
+
+EventListener를 cell에 추가해 Event Bubbling을 활용할 수 있으나, 이는 해당 cell에 두더지가 있는지, 폭탄이 있는지를 구별을 따로 해주어야 하기 때문에, 개별적으로 eventListener를 추가하도록 한다.
+
+```js
+$cell.querySelector('.WAM-gopher').addEventListener('click', (event) => {
+  event.target.classList.add('dead');
+  event.target.classList.add('hidden');
+});
+```
+`dead` 클래스를 추가해 잡은 두더지 이미지를 보여주는데, 이때 위에서 설정한 타이머를 종료해야 올라오는 도중에 두더지를 잡았을 때 즉시 내려갈 수 있도록 만들 수 있다. 따라서, 기존 타이머를 제거하고, 새로운 타이머를 설정해야 한다.
+
+```js
+clearTimeout(holes[index]);
+```
+
+또한, 잡은 두더지 이미지가 다시 올라오지 않도록 `dead` 클래스를 제거해주어야 한다. 다만, 바로 제거해버리면 잡은 두더지 이미지가 설정되지 않기 때문에 `setTimeout()`으로 타이머를 설정해주어야 한다.
+
+```js
+setTimeout(() => {
+  event.target.classList.remove('dead');
+  holes[index] = 0;
+}, 1000);
+```
+
+이와 유사하게 폭탄의 경우도 `exploded` 클래스를 활용해 코드를 작성할 수 있다.
+
+```js
+$cell.querySelector('.WAM-bomb').addEventListener('click', (event) => {
+  event.target.classList.add('exploded');
+  event.target.classList.add('hidden');
+  clearTimeout(holes[index]);
+  setTimeout(() => {
+    holes[index] = 0;
+    event.target.classList.remove('exploded');
+  }, 1000);
+});
+```
+
+#### 점수 계산하기
+다중 클릭의 경우 점수가 여러번 기록되는 문제가 있다. 따라서, 아직 잡지 않은 두더지만 click시 점수를 주게끔 설정하면 된다.
+```js
+if (!event.target.classList.contains('dead')) { // 하나의 두더지를 다중 click하는 경우 방지
+  WAMScore += 1;
+  $WAMScore.textContent = WAMScore;
+}
+```
+
+#### 제한시간 설정하기
+
+60초의 제한 시간을 설정하고, 이를 `setInterval()`을 활용해서 보여줄 수 있다. 다만, 소수점으로 계산하면 문제가 생길 수 있어서 WAMTime -= 0.1 은 잘 사용하지 않는다.
+
+```js
+WAMTime = 60;
+
+const timerId = setInterval(() => {
+  WAMTime = (WAMTime * 10 - 1) / 10;
+  $WAMTimer.textContent = WAMTime;
+  if (WAMTime === 0) {
+    setTimeout(() => {
+      clearInterval(timerId);
+      clearInterval(tickId);
+      alert(`게임 오버, 점수는 ${WAMScore}점!`);
+    }, 50)
+  };
+}, 100);
+```
+
+이때, `alert()`로 대화 상자를 열면, 화면을 그리는 것을 막기 때문에 `setTimeout()`으로 화면이 그려질 시간을 부여해야 한다.
+
+---
+
+1. HTML은 후술된 tag가 화면에서 가장 앞에 보이기 때문에 이를 고려해서 더 자연스러운 그래픽 작업(예: 깊이감 부여하기 등)을 할 수 있다.
+
+2. 게임 난이도를 조절할 때 CSS의 trasition의 속도를 높이면 되는데, 이는 JS에서 충분히 가능하다.
+
+3. 원시값을 담은 변수에 다른 원시값을 대입해 원본 객체를 바꾸려고 하면 안된다. 원본 객체에 접근하기 위해서는 참조 관계를 유지하고 있는 변수를 활용해야 한다.
+
+4. HTML, CSS의 적극적인 활용이 중요하다. 특히, 애니메이션이나 화면 요소들의 배치는 JS보다 HTML, CSS가 더 효율적일 수 있다.
+
+5. Event Loop 분석
+모든 Event를 분석하는 것은 어렵기 때문에 관련 있는 Event만 분석하는 것이 더 좋다. 즉, 독립적으로 기능하는 Event는 해당 Event만 분석할 수 있다. 특히 비동기적으로 작동하는 Event의 경우 반드시 분석할 수 있게끔 해야 한다.
+
+6. `alert()`
+현재 진행되는 화면의 변경사항이나 애니메이션을 즉시 멈추고 알림 대화 상자를 열기 때문에, 마지막 화면 변경 사항이나 애니메이션이 적용되지 않는 경우가 많다. 따라서 `setTimeout()`과 함께 호출하여 마지막 화면의 변경사항이나 애니메이션이 적용될 시간을 주는 것이 좋다.
+
