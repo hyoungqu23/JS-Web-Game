@@ -5,8 +5,15 @@
   font-family: 'Poppins', sans-serif;
   /* background: #000000;
   color: #ffffff; */
-  /* scroll-behavior: smooth; */
+  scroll-behavior: smooth;
 }
+
+/* reset */
+a {
+  text-decoration: none;
+  color: #000000;
+}
+
 
 .ipt {
   width: 300px;
@@ -43,16 +50,61 @@ body .scroll__container {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
   /* scroll-padding: 10px; */
+  display: grid;
 }
 
 section.webgame {
-  /* width: 50%; */
   height: 100vh;
+  left: 300px;
   scroll-snap-align: start;
   display: grid;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  justify-self: center;
+}
+
+/* Header */
+.navbar__container {
+  position: fixed;
+  width: 300px;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background: linear-gradient( 135deg, #90F7EC 10%, #FFFFFF 100%);
+}
+
+.navbar__logo {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#logo {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.navbar__links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.navbar__links li {
+  margin: 10px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* FirstPage */
+#firstPage {
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 100vh;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 /* Lotto  */
