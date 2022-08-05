@@ -1,4 +1,8 @@
 # JS-Web-Game
+---
+해당 프로젝트는 강의를 수강하며 Vanilla JavaScript로 구현한 Web Games입니다.
+---
+
 
 ## [For FrontEnd](https://developer.mozilla.org/en-US/docs/Learn/Front-end_web_developer)
 
